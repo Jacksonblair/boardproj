@@ -1,0 +1,43 @@
+include header
+
+	.ui.left.vertical.sidebar.labeled.icon.menu
+		.item
+			h3.sidebar-item-header.views
+				| VIEWS
+		a.item
+			i.fas.fa-calendar
+			p Calendar
+		a.item
+			i.fas.fa-th-list
+			p List
+		.item
+			h3.sidebar-item-header.views
+				| FILTERS
+		a.item.filter-post-type-item
+			span
+				i.fas.fa-sticky-note
+			p NOTES
+		a.item.filter-post-type-item
+			span
+				i.fas.fa-exclamation
+			p ANNOUNCEMENTS
+		a.item.filter-post-type-item
+			span
+				i.fas.fa-star
+			p EVENTS
+
+	.pusher
+		include menu
+		include filters
+		.ui.stackable.internally.celled.grid
+			.row
+				.ui.one.wide.column
+				.ui.seven.wide.column.main-column
+					include feed
+				.ui.eight.wide.column
+					.ui.sticky
+						.expanded-post-window
+							h1 Title
+
+
+include footer
