@@ -125,6 +125,12 @@ h3.sidebar-item-header {
 	margin-top: 0px;
 }
 
+.ui.items .item .content .title {
+	margin-top: 0px;
+	font-size: 1.1rem;
+	font-weight: bold;
+}
+
 .ui.items .item .floating-type-icon {
     position: absolute;
     top: -1rem;

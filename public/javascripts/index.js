@@ -52,23 +52,31 @@ var filterState = {
 
 
 function toggleCategoryButton(element) {
-
-	// change invisible input value
-	var state;
-	// console.log("initial: ", element.firstElementChild.value);
-
+	// Store a boolean in 'state', and an index in 'index' to pass to filterState method to update object AND
+	// Get value of invisible input associated with category button, then toggle it either to true or false
 	var state = (element.firstElementChild.value === "true") ? false : true;
+	var index = getIndexOfElement(element);
 	element.firstElementChild.value = (element.firstElementChild.value === "true") ? "false" : "true";
 
-	// console.log("post: ", element.firstElementChild.value);
-	// console.log("change object index state to: ", state);
+	filterState.updateCategory(state, index);
 
-	// get index of element (to match to object to send with AJAX)
-	filterState.updateCategory(state, getIndexOfElement(element));
+	// update button styles 
+	toggleCategoryButtonStyle(element, state);
 
+	// AJAX request
 	updateBoard();
 }
 
+function toggleCategoryButtonStyle(element, isSelected) {
+	// toggles button between true and false styles
+	if (isSelected) {
+		element.style.background = "#FBBD08";
+		element.style.color = "white";
+	} else {
+		element.style.background = "#E0E1E2";
+		element.style.color = "black";
+	}
+}
 
 function getIndexOfElement(node) { 
 	var i = 0;
@@ -76,6 +84,9 @@ function getIndexOfElement(node) {
 	return i;
 }
 
+
+
+/* Ajax request, called for each change to a filter element */
 function updateBoard() {
     $.ajax({
         type: 'post',
@@ -83,8 +94,7 @@ function updateBoard() {
         data: JSON.stringify(filterState),
         contentType: 'application/json'
     })
-    .done(function(data){
-    	console.log("sent");
-        // $('h1').html(data.quote);
+    .then(function(data){
+        $('#feedcolumn').html(data);
     });
 }
