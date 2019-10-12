@@ -12,6 +12,29 @@
 			- Year
 				< [ This year ] >
 
+1		Have a button for incrementing, and a button for decrementing.
+			- All
+			- Day values:
+				On
+					Show date picker + decrement buttons
+				After
+					Show date picker + decrement buttons
+				Before
+					Show date picker + decrement buttons
+				Between
+					Show two date pickers + decrement buttons
+
+
+			- Month values:
+				January - February
+			- Year values:
+
+		When the page renders, show all. 
+
+
+
+
+
 		- Keyword search
 
 		- View

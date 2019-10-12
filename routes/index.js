@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/ajax', function(req, res, next) {
-	console.log(req.body.categories);
+	console.log(req.body);
 	// get filtered board seed
 	res.render('feed', { feed: filterFeed(req.body) });
 });
@@ -24,7 +24,8 @@ function filterFeed(filter) {
 		return post.category === allowedCats[0] || post.category === allowedCats[1] || post.category === allowedCats[2];
 	});
 
-	
+	// filter by date
+
 
 	return filteredFeed;
 }
@@ -54,23 +55,35 @@ var boardSeed = [
 		content: 'Birthday party occuring on the 4th of the 5th! Don\'t miss it or Suzy will crack the shits.',
 		category: 'EVENT',
 		author: 'Jimmy',
-		postDate: '28/04/10',
-		time: '04:25'
+		postdate: {
+			day: '24',
+			month: '04',
+			year: '2010',
+			time: '04:25'
+		}
 	}, {
 		title: 'No more orgies at the office!',
 		description: 'Sick of these damn orgies.',
 		content: 'We\'ve had seven orgies this week and it\'s getting out of control. James slipped on some jizz and hurt his ankle so that\'s sucks. Chill out with the orgies damnit!',
 		category: 'ANNOUNCEMENT',
 		author: 'Jimmy',
-		postDate: '4/05/10',
-		time: '04:25'
+		postdate: {
+			day: '04',
+			month: '05',
+			year: '2010',
+			time: '04:25'
+		}
 	}, {
 		title: 'Please label your sandwiches.',
 		description: 'Sick of these damn unlabeled sandwiches.',
 		content: 'Hi all i\'ve had several complaints about the sandwich bandit this week, but he or her only seems to be targeting those sloppy staff members who don\'t label their sandwiches. Please do so if you don\'t want the sandwich bandit to steal your lunch',
 		category: 'REMINDER',
 		author: 'Graham',
-		postDate: '12/04/10',
-		time: '04:25'
+		postdate: {
+			day: '12',
+			month: '04',
+			year: '2010',
+			time: '20:45'
+		}
 	}
 ]

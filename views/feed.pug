@@ -1,11 +1,9 @@
-.ui.items
+#itemfeed.ui.items
 	each post in feed
-		.item
+		.item(onclick="showContent(" + JSON.stringify(post) + ")")
 			.ui.middle.aligned.basic.segment.date-segment
-					.ui.header.day-header
-						| 15
-					.ui.header.month-header
-						| APR
+					.ui.header.day-header= post.postdate.day
+					.ui.header.month-header= post.postdate.month
 			.content
 				.header.item-category= post.category
 				.ui.divider
@@ -14,4 +12,10 @@
 				.description
 					p= post.description
 			.floating-type-icon
-				i.fas.fa-star
+				#post
+					if post.category === 'EVENT'
+						i.fas.fa-star
+					else if post.category === 'ANNOUNCEMENT'
+						i.fas.fa-exclamation
+					else if post.category === 'REMINDER'
+						i.fas.fa-sticky-note

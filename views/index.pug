@@ -28,16 +28,21 @@ include header
 
 	.pusher
 		include menu
-		include filters
 		.ui.stackable.internally.celled.grid
+			.row
+				.ui.one.wide.column
+				.ui.fourteen.wide.column
+					include filters
 			.row
 				.ui.one.wide.column
 				#feedcolumn.ui.seven.wide.column.main-column
 					include feed
 				.ui.eight.wide.column
 					.ui.sticky
-						.expanded-post-window
-							h1 Title
+						#contentviewer.expanded-post-window
+							#contentviewerpostheader.ui.large.header
+							#contentviewerpostdescription.ui.header
+							#contentviewerpostcontent
 
 
 include footer

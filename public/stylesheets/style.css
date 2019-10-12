@@ -6,6 +6,7 @@ a {
 	color: #00B7FF;
 }
 
+
 /* Sidebar styles */
 
 .sidebar a.item i {
@@ -160,12 +161,31 @@ h3.sidebar-item-header {
 
 /* FILTER BAR STYLES*/
 
-form .category-input-button {
+#filterform .category-input-button {
 	height: 50px;
 	width: 50px;
-	background: blue;
+	border-radius: 50px;
+	padding: 0;
+	font-size: 2rem;
 }
 
 input.category-input {
 	display: none;
+}
+
+#example9 {
+	display: none;
+}
+
+#rangestart, #rangeend  {
+	display: none;
+}
+
+.ui.calendar {
+	vertical-align: top;
+}
+
+#searchinput {
+	display: inline-block;
+	width: 250px;
 }
