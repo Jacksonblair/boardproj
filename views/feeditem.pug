@@ -1,0 +1,21 @@
+div(onclick="showContent(" + JSON.stringify(post) + ")")
+	div.post-segment-container
+		.ui.header
+			span
+				if post.category === 'EVENT'
+					i.fas.fa-star
+				else if post.category === 'ANNOUNCEMENT'
+					i.fas.fa-exclamation
+				else if post.category === 'REMINDER'
+					i.fas.fa-sticky-note
+				| &nbsp
+				= post.title
+		.meta
+			span= post.description
+		.description
+			p
+		.extra
+			| From: 
+			a Hiring and firing
+
+	.floating-type-icon

@@ -17,14 +17,6 @@
 
 $(document).ready(function(){
 
-	$('.ui.sidebar').sidebar({
-		dimPage: false,
-		transition: 'push'
-	});
-
-	$('.ui.sidebar')
-		.sidebar('attach events', '.item.sidebar-toggle');
-
 	$('.ui.dropdown')
 		.dropdown();
 
@@ -33,49 +25,60 @@ $(document).ready(function(){
 		context: '.ui.column.main-column'
 	});
 
+	$('.ui.calendar').calendar({
+		type: 'date',
+		initialDate: null,
+		today: true
+	});
+
 	$('#rangestart').calendar({
 		type: 'date',
+		today: true,
 		endCalendar: $('#rangeend'),
 		onChange: function (date, text, mode) {
-			filterState.startdate = date;
+			filterState.startdate = JSON.stringify(date).substr(1, 10);;
 			updateBoard();
 		}
 	});
 
 	$('#rangeend').calendar({
 		type: 'date',
+		today: true,
 		startCalendar: $('#rangestart'),
 		onChange: function (date, text, mode) {
-			filterState.enddate = date;
+			filterState.enddate = JSON.stringify(date).substr(1, 10);;
 			updateBoard();
 		}
 	});
 
-	$('#example9').calendar({
+	$('#calendar').calendar({
 		type: 'date',
+		initialDate: null,
+		today: true,
 	    onChange: function (date, text, mode) {
-	    	filterState.date = date;
+	    	filterState.date = JSON.stringify(date).substr(1, 10);
 	    	updateBoard();
     	}
 	});
 
 	$('.menu .item').click(function() {
 		var setting = $(this).text().trim();
+
 		filterState.dateSetting = setting;
 
 		if (setting === "ALL") {
-			$('#example9, #rangestart, #rangeend').css({
+			$('#calendar, #rangestart, #rangeend').css({
 				"display":"none"
 			});
 		} else if (setting === "RANGE") {
 			$('#rangestart, #rangeend').css({
 				"display":"inline-block"
 			});
-			$('#example9').css({
+			$('#calendar').css({
 				"display":"none"
 			})
 		} else if (setting === "FROM" || setting === "BEFORE") {
-			$('#example9').css({
+			$('#calendar').css({
 				"display":"inline-block"
 			})
 			$('#rangestart, #rangeend').css({
@@ -84,6 +87,7 @@ $(document).ready(function(){
 		}
 
 		updateBoard();
+
 	})
 
 
@@ -95,15 +99,15 @@ $(document).ready(function(){
 	    if (a === "1") {
 	    	$(this).val("2");
 		    $(this).css({
-		    	'background':"#E0E1E2",
-		    	'color':"black"
+		    	'color':"#e6e6e6",
+		    	'background':"white"
 		    })
 		    filterState.categories[index] = false;
 	    } else if (a === "2") {
 	    	$(this).val("1")
 		    $(this).css({
-		    	'background':"#FBBD08",
-		    	'color':"white"
+		    	'color':"black",
+		    	'background':'#E0E1E2'
 		    })
 		    filterState.categories[index] = true;
 	    } 
@@ -111,13 +115,21 @@ $(document).ready(function(){
 	    updateBoard();
 	});
 
-	$('#searchinputsubmit').click(function() {
+	$('#searchform').submit(function(e) {
+		e.preventDefault();
 		var search = $('#searchinput').val();
-		filterState.search = search;
-
+		filterState.search = search.toLowerCase();
 		updateBoard();
-	});
+	})
+
 });
+
+function searchformsubmit() {
+	console.log('wot');
+	var search = $('#searchinput').val();
+	filterState.search = search.toLowerCase();
+	updateBoard();
+}
 
 /* CONTENT VIEW FUNCTIONALITY */
 
@@ -162,6 +174,9 @@ var filterState = {
 
 /* Ajax request, called for each change to a filter element */
 function updateBoard() {
+
+	console.log('updating filters...')
+
     $.ajax({
         type: 'post',
         url: './ajax',
@@ -169,6 +184,11 @@ function updateBoard() {
         contentType: 'application/json'
     })
     .then(function(data){
-        $('#feedcolumn').html(data);
+    	if (data) {
+        	$('#feedcolumn').html(data);
+        	// console.log(data);
+    	} else {
+			console.log('wot');  		
+    	}
     });
 }

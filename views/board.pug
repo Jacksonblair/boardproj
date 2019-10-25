@@ -14,10 +14,16 @@ include header
 	#maingrid.ui.stackable.grid
 		.row.feed-row
 			.ui.two.wide.column.side-column
-			#commoncolumn.ui.twelve.wide.column.main-column
-				h3 Your boards: 
-				each board in boards
-					a.ui.basic.button(href="/board/" + board.id + "/" )= board.name
+			#feedcolumn.ui.five.wide.column.main-column
+				include feed
+			#contentcolumn.ui.seven.wide.column
+				.ui.sticky
+					#contentsegment.ui.segment
+						#contentviewer
+							#contentviewerpostheader.ui.large.header
+							.ui.divider
+							#contentviewerpostdescription.ui.header
+							#contentviewerpostcontent
 			.ui.two.wide.column.side-column
 
 	include footer

@@ -1,26 +1,61 @@
 var createError = require('http-errors');
 var express = require('express');
+var app = express();
 var path = require('path');
-var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var sessions = require('client-sessions'); 
+var bodyParser = require('body-parser');
+const db = require('./db');
+const User = require('./db/user');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// sessions
+app.use(sessions({
+	cookieName: "session",
+	secret: process.env.SECRET,
+	duration: 30 * 60 * 1000, // 30 mins
+	httpOnly: true, 	// dont let js code access cookies
+	secure: true 		// only set cookie is using https
+}));
+
+// smart user middleware
+app.use((req, res, next) => {
+	if (!(req.session && req.session.userId))
+		return next();
+
+	db.query(User.getOneById(req.session.userId))
+	.then(user => {
+		if (!user.rows[0])
+			return next();
+
+		// clear hashed password
+		user.rows[0].password = undefined;
+
+		req.user = user.rows[0];
+		res.locals.user = user.rows[0];
+		// console.log(res.locals.user);
+
+		next();
+	})
+	.catch(err => {
+		return next(err);
+	});
+});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

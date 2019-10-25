@@ -1,11 +1,10 @@
-#filterform.ui.form
-	button.ui.yellow.button.category-input-button(value=1) 
-		i.fas.fa-star
-	button.ui.yellow.button.category-input-button(value=1) 
-		i.fas.fa-sticky-note
-	button.ui.yellow.button.category-input-button(value=1)
-		i.fas.fa-exclamation
-	input#searchinput(type="text" placeholder="Enter a search term...")
-	button#searchinputsubmit.ui.button
-		i.fas.fa-search
-	include calendar
+#filtercolumn.column
+	#filterform.ui.form
+
+
+		form#searchform.ui.form
+			.field
+				input#searchinput(type="text" placeholder="Enter a search term...")
+			#searchinputsubmit.ui.basic.button(onclick="searchformsubmit()")
+				i.fas.fa-search
+		.ui.dropdown.basic.button.filter-button FILTERS
