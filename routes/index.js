@@ -3,12 +3,13 @@ var router = express.Router();
 var _ = require('underscore');
 var db = require('../db');
 var Board = require('../db/board');
+var he = require('he');
 
 
 /* GET home page. */
 router.get('/', isLoggedIn, async function(req, res, next) {
 
-	db.query(Board.getBoardsByOwnerId(req.user.id))
+	db.query(Board.getBoardsByOwnerId(req.session.userId))
 	.then(boards => {
 		if (!boards.rows[0]) {
 			return res.render('index');
@@ -21,31 +22,38 @@ router.get('/', isLoggedIn, async function(req, res, next) {
 
 /* GET board */
 router.get('/board/:boardid/', isPublic, isLoggedIn, async function(req, res, next) {
-
-	db.query(Board.getPostsByBoardId(req.params.boardid))
-	.then(posts => {
-		if (!posts.rows[0]) {
-			return res.render('board');
-		} else {
-			return res.render('board', {feed: posts.rows})
-		}
+	db.query(Board.getBoardByBoardId(req.session.userId))
+	.then((board) => {
+		db.query(Board.getPostsByBoardId(req.params.boardid))
+		.then(posts => {
+			if (!posts.rows[0]) {
+				return res.render('board');
+			} else {
+				return res.render('board', {feed: posts.rows, currentboard: board.rows[0]})
+			}
+		})
 	})
-
+	.catch((err) => {
+		console.log(err);
+		return res.redirect('/');
+	});
 });
 
 /* GET new post page */
-router.get('/board/:boardid/new_post', async function(req, res, next) {
+router.get('/board/:boardid/new_post', isLoggedIn, async function(req, res, next) {
 	res.render('submitpost');
 });
 
-/* Add new post to board */
-router.post('/board/:boardid/new_post', async function(req, res, next) {
-	console.log(req.body)
-	console.log(req.params.boardid)
-	db.query(Board.createPost(req.body, req.params.boardid))
+/* POST new post to board */
+router.post('/board/:boardid/new_post', isLoggedIn, isOwner, async function(req, res, next) {
+
+	// console.log(Board.createPost(req.body, req.params.boardid, req.user));
+	console.log(req.body.content);
+
+	db.query(Board.createPost(req.body, req.params.boardid, req.user))
 	.then(() => {
 		console.log(`Added new post to board id: ${req.params.boardid}`)
-		res.redirect(`/board/${req.params.boardid}`);
+		res.redirect(`/board/${req.params.boardid}/`);
 	})
 	.catch((err) => {
 		console.log(err);
@@ -53,25 +61,105 @@ router.post('/board/:boardid/new_post', async function(req, res, next) {
 	})
 });
 
-router.post('/ajax', async function(req, res, next) {
+/* Delete post from board */
+router.delete('/board/:boardid/:postid', isLoggedIn, isOwner, async function(req, res, next) {
+	db.query(Board.deletePost(req.params.postid))
+	.then(() => {
+		console.log('- deleted post');
+		return res.redirect(`/board/${req.params.boardid}/`);
+	})
+	.catch((err) => { 
+		console.log(err);
+		return res.redirect('/');
+	})
+});
+
+/* GET update post page */
+router.get('/board/:boardid/:postid/edit_post', isLoggedIn, async function(req, res, next) {
+	db.query(Board.getPostByPostId(req.params.postid))
+	.then((post) => {
+		if (post.rows[0]) {
+			console.log(post.rows);
+			return res.render('editpost', {post: post.rows[0]})
+		}
+		return res.render('editpost', {error: 'Post does not exist'});
+	})
+	.catch((err) => { 
+		console.log(err);
+		return res.redirect('/');
+	})
+});
+
+/* UPDATE post on board */
+router.put('/board/:boardid/:postid/', isLoggedIn, isOwner, async function(req, res, next) {
+	db.query(Board.editPost(req.body, req.params.postid, req.user))
+	.then(() => {
+		console.log('- updated post');
+		return res.redirect(`/board/${req.params.boardid}/`);
+	})	
+	.catch((err) => { 
+		console.log(err);
+		return res.redirect('/');
+	})
+});
+
+router.post('/board/:boardid/update_content', isLoggedIn, isOwner, async function(req, res, next) {
+	// update content element with post content
+	var content = {};
+
+	db.query(Board.getPostByPostId(req.body.post_id))
+	.then((post) => {
+		if (post) {
+			return res.render('partials/content', {post: post.rows[0]});
+		}
+	})
+	.catch((err) => {
+		console.log(err);
+	})
+})
+
+router.post('/board/:boardid/update_filters', isPublic, isLoggedIn, async function(req, res, next) {
 	// get filtered board feed
 	console.log(req.body);
 
 	var feed = [];
 
-	try {
-		var query = getFilterQuery(req.body)
-		if (query) {
-			var response = await db.query(query)	
-			if (response.rows) {
-				feed = response.rows
-			}
+	db.query(Board.getFilteredPosts(req.body, req.params.boardid))
+	.then((posts) => {
+		console.log(posts.rows)
+		if (posts.rows) {
+			feed = _.clone(posts.rows);
+			return res.render('partials/feed', {feed: feed})
 		}
-	} catch (err) {
+	})
+	.catch((err) => {
 		console.log(err);
-	}
+	});
 
-	res.render('feed', {feed: feed});
+});
+
+router.post('/board/:boardid/update_board', isPublic, isLoggedIn, async function(req, res, next) {
+
+	// Update posts with new settings
+	// get posts and render board again
+	var feed = [];
+
+	console.log(req.body);
+
+	if (req.body.case = "pin") {
+		db.query(Board.pinPosts(req.body.checked))
+		.then(() => {
+			db.query(Board.getPostsByBoardId(req.params.boardid))
+			.then((posts) => {
+				feed = _.clone(posts.rows);
+				console.log(feed);
+				return res.render('partials/feed', {feed: feed});
+			})
+		})
+		.catch((err) => {
+			console.log(err);
+		})
+	}
 });
 
 
@@ -103,102 +191,17 @@ function isLoggedIn(req, res, next) {
 	}
 }
 
-/* BUILD SQL QUERY MATCHING USER FILTERS */
-function getFilterQuery(filter) {
-	var query = `SELECT title, description, content, category,
-				TO_CHAR(created, 'MON') AS month,
-				EXTRACT(DAY from CREATED) AS day,
-				EXTRACT(YEAR from CREATED) AS year 
-				FROM posts WHERE `;
-
-	console.log(query);
-
-	/*filter by categories
-	- Get allowed categories (which is an array), remove empties, add quotation marks, and join with commas (to parse in SQL query)
-	- If no categories, just return a dud request */
-
-	var allowedCategories 
-	if (!(allowedCategories = getAllowedCategories(filter.categories)))
-		return false;
-	query += `category IN (${allowedCategories}) `;
-
-	/*filter by search terms*/
-	if (filter.search)
-		query += `AND LOWER(description) LIKE ('%${filter.search}%') OR LOWER(title) LIKE ('%${filter.search}%') OR LOWER(content) LIKE ('%${filter.search}%') `
-
-	/* filter by date function and date */
-	if (filter.dateSetting) {
-		switch(filter.dateSetting) {
-			case "FROM":
-				query += `AND created > ('${filter.date}') `;
-				break;
-			case "BEFORE":
-				query += `AND created < ('${filter.date}') `;
-				break;
-			case "RANGE":
-				query += `AND created BETWEEN '${filter.startdate}' AND '${filter.enddate}' `;
-				break;
+function isOwner(req, res, next) {
+	db.query(Board.getBoardByBoardId(req.params.boardid))
+	.then((board) => {
+		if (board.rows[0] && board.rows[0].owner_id === req.session.userId) {
+			console.log('- user owns board');
+			return next();
+		} else {
+			console.log('- user does not own board. Redirecting.')
+			return res.redirect('/users/login');
 		}
-
-	}
-
-	query += 'ORDER BY created'
-	console.log(query);
-	return query;
+	})
 }
-
-
-function getAllowedCategories(categories) {
-	// compares to returned database posts
-	var availCategories = ["EVENT", "REMINDER", "ANNOUNCEMENT"];
-
-	// checks truthyness of filter buttons for different categories and returns array to be checked against DB returned posts
-	categories.forEach((category, index) => {
-		if (!category) {
-			availCategories[index] = "";
-		}
-	});
-
-	return availCategories.filter(Boolean).map(function(cat) { return "'" + cat + "'" }).join(', ');;
-}
-
-// var boardSeed = [
-
-// 	// Events, Announcement, Reminder
-
-// 	{
-// 		title: 'Big birthday party!',
-// 		description: 'Suzies having a huge birthday omg',
-// 		content: 'Birthday party occuring on the 4th of the 5th! Don\'t miss it or Suzy will crack the shits.',
-// 		category: 'EVENT',
-// 		author: 'Jimmy'
-// 	}, {
-// 		title: 'No more orgies at the office!',
-// 		description: 'Sick of these damn orgies. Shit\'s insane. Jizz all over the shop',
-// 		content: 'We\'ve had seven orgies this week and it\'s getting out of control. James slipped on some jizz and hurt his ankle so that\'s sucks. Chill out with the orgies damnit!',
-// 		category: 'ANNOUNCEMENT',
-// 		author: 'Jimmy'
-// 	}, {
-// 		title: 'Please label your sandwiches.',
-// 		description: 'Sick of these damn unlabeled sandwiches.',
-// 		content: 'Hi all i\'ve had several complaints about the sandwich bandit this week, but he or her only seems to be targeting those sloppy staff members who don\'t label their sandwiches. Please do so if you don\'t want the sandwich bandit to steal your lunch',
-// 		category: 'REMINDER',
-// 		author: 'Graham'
-// 	}
-// ]
-
-// async function seed() {
-// 	boardSeed.forEach(async function(post) {
-// 		try {
-// 			const res = await db.query('INSERT INTO posts (title, description, content, category, ) VALUES ($1, $2, $3, $4)', [post.title, post.description, post.content, post.category])
-// 			console.log(res.rows[0])
-// 		} catch (err) {
-// 			console.log("err:", err);
-// 		}
-// 	})
-// }
-
-// seed();
-
 
 module.exports = router;

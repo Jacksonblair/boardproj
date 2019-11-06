@@ -1,29 +1,26 @@
-include header
+include partials/header
 
 #wrapper
-	#menugrid.ui.grid
-		.ui.two.wide.column.side-column
-		.ui.twelve.wide.column
-			include menu
-		.ui.two.wide.column.side-column
-	#filtergrid.ui.grid
-		.ui.two.wide.column.side-column
-		.ui.twelve.wide.column.main-filter-column
-			include filters
-		.ui.two.wide.column.side-column
+	include partials/menugrid
+	include partials/errorgrid
+	include partials/filtergrid
 	#maingrid.ui.stackable.grid
-		.row.feed-row
-			.ui.two.wide.column.side-column
-			#feedcolumn.ui.five.wide.column.main-column
-				include feed
-			#contentcolumn.ui.seven.wide.column
-				.ui.sticky
-					#contentsegment.ui.segment
-						#contentviewer
-							#contentviewerpostheader.ui.large.header
-							.ui.divider
-							#contentviewerpostdescription.ui.header
-							#contentviewerpostcontent
-			.ui.two.wide.column.side-column
+		.ui.two.wide.computer.only.column
+		#mobilefeedcontentcolumn.ui.column
 
-	include footer
+			.ui.top.attached.two.item.tabular.menu.tab-menu
+				a.item.feed-item.active(data-tab="first") Feed
+				a.item.content-item(data-tab="second") Content
+			.ui.bottom.attached.tab.segment.active(data-tab="first")
+				include partials/feed
+			.ui.bottom.attached.tab.segment(data-tab="second")
+				include partials/mobilecontent
+
+		#feedcolumn.ui.four.wide.computer.seven.wide.tablet.column
+			include partials/feed
+		#contentcolumn.ui.eight.wide.computer.nine.wide.tablet.column.main-column
+			.ui.sticky
+				include partials/content
+		.ui.two.wide.computer.only.column
+
+	include partials/footer

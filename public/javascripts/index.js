@@ -1,21 +1,24 @@
 
-// $(document).ready(function(){
-//     $("form#changeQuote").on('submit', function(e){
-//         e.preventDefault();
-//         var data = $('input[name=quote]').val();
-//         $.ajax({
-//             type: 'post',
-//             url: '/ajax',
-//             data: data,
-//             dataType: 'text'
-//         })
-//         .done(function(data){
-//             $('h1').html(data.quote);
-//         });
-//     });
-// });
-
 $(document).ready(function(){
+
+	$('.ui.checkbox').checkbox({
+	    onChecked: function() {
+	    	boardState.action.checked.push($(this).attr('value'));
+	       	console.log(boardState.action.checked);
+	    },
+	    onUnchecked: function() {
+	       	boardState.action.checked.splice(boardState.action.checked.indexOf($(this).attr('value')), 1);
+	       	console.log(boardState.action.checked);
+	    }
+	});
+
+	tinymce.init({
+		selector: '#textarea'
+	});
+
+	$('.menu.tab-menu .item')
+		.tab()
+	;
 
 	$('.ui.dropdown')
 		.dropdown();
@@ -36,8 +39,8 @@ $(document).ready(function(){
 		today: true,
 		endCalendar: $('#rangeend'),
 		onChange: function (date, text, mode) {
-			filterState.startdate = JSON.stringify(date).substr(1, 10);;
-			updateBoard();
+			boardState.filters.startdate = JSON.stringify(date).substr(1, 10);
+			updateBoardFilters();
 		}
 	});
 
@@ -46,8 +49,8 @@ $(document).ready(function(){
 		today: true,
 		startCalendar: $('#rangestart'),
 		onChange: function (date, text, mode) {
-			filterState.enddate = JSON.stringify(date).substr(1, 10);;
-			updateBoard();
+			boardState.filters.enddate = JSON.stringify(date).substr(1, 10);
+			updateBoardFilters();
 		}
 	});
 
@@ -56,15 +59,15 @@ $(document).ready(function(){
 		initialDate: null,
 		today: true,
 	    onChange: function (date, text, mode) {
-	    	filterState.date = JSON.stringify(date).substr(1, 10);
-	    	updateBoard();
+			boardState.filters.date = JSON.stringify(date).substr(1, 10);
+	    	updateBoardFilters();
     	}
 	});
 
-	$('.menu .item').click(function() {
+	$('.menu.calendar-menu .item').click(function() {
 		var setting = $(this).text().trim();
 
-		filterState.dateSetting = setting;
+		boardState.filters.dateSetting = setting;
 
 		if (setting === "ALL") {
 			$('#calendar, #rangestart, #rangeend').css({
@@ -86,7 +89,7 @@ $(document).ready(function(){
 			});
 		}
 
-		updateBoard();
+		updateBoardFilters();
 
 	})
 
@@ -94,7 +97,7 @@ $(document).ready(function(){
 	$('button.category-input-button').click(function() {
 	    var state = $(this).val(); // get value of button
 	    var a = state.slice(0); // copy by value
-	    var index = $(this).index();
+	    var index = $(this).index() - 1;
 
 	    if (a === "1") {
 	    	$(this).val("2");
@@ -102,93 +105,172 @@ $(document).ready(function(){
 		    	'color':"#e6e6e6",
 		    	'background':"white"
 		    })
-		    filterState.categories[index] = false;
+		    boardState.filters.categories[index] = false;
 	    } else if (a === "2") {
 	    	$(this).val("1")
 		    $(this).css({
 		    	'color':"black",
-		    	'background':'#E0E1E2'
+		    	'background':'whitesmoke'
 		    })
-		    filterState.categories[index] = true;
+		    boardState.filters.categories[index] = true;
 	    } 
 
-	    updateBoard();
+	    updateBoardFilters();
 	});
 
 	$('#searchform').submit(function(e) {
 		e.preventDefault();
 		var search = $('#searchinput').val();
-		filterState.search = search.toLowerCase();
-		updateBoard();
+		boardState.filters.search = search.toLowerCase();
+		updateBoardFilters();
 	})
 
+	// For  changing tabs on mobile screen
+	$('.post-segment-container')
+	.on('click', function() {
+		$('.item.content-item').addClass('active');
+		$('.item.feed-item').removeClass('active');
+		$.tab('change tab', 'second');
+	});
+
 });
+
+function pinPosts() {
+	boardState.action.type = "pin";
+	updateBoard();
+}
 
 function searchformsubmit() {
 	console.log('wot');
 	var search = $('#searchinput').val();
-	filterState.search = search.toLowerCase();
-	updateBoard();
+	boardState.filters.search = search.toLowerCase();
+	updateBoardFilters();
 }
 
 /* CONTENT VIEW FUNCTIONALITY */
 
-var contentViewer = document.getElementById('contentviewer');
-
-function showContent(post) {
-
-	// remove contentViewer elements
-  	// while (contentViewer.firstChild) {
-   //  	contentViewer.removeChild(contentViewer.firstChild);
-  	// };
-
-	document.getElementById('contentviewerpostheader').innerHTML = post.title;
-	document.getElementById('contentviewerpostdescription').innerHTML = post.description;
-	document.getElementById('contentviewerpostcontent').innerHTML = post.content;
-	// .ui.header.content-viewer-post-description
-
+function showSiblings(element) {
+	var element = $(element);
+	if (element.attr('value') == "hidden") {
+		element.attr('value', 'shown');
+		$(element).siblings('.post-segment-container').css('display', 'inline-block');
+		$(element).siblings('.post-functionality-container').css('visibility', 'visible');
+	} else {
+		element.attr('value', 'hidden');
+		$(element).siblings('.post-segment-container').css('display', 'none');
+		$(element).siblings('.post-functionality-container').css('visibility', 'hidden');
+	}
 }
 
-
+function showContent(post) {
+	// document.getElementById('contentviewerpostdeletebutton').attributes.action = `./${post.id}?_method=DELETE`;
+	console.log(document.getElementById('postcontentdeleteform').attributes.action.value = `./${post.id}?_method=DELETE`);
+	console.log(document.getElementById('postcontenteditbutton').attributes.href.value = `./${post.id}/edit_post`);
+	console.log(document.getElementById('mobilepostcontentdeleteform').attributes.action.value = `./${post.id}?_method=DELETE`);
+	console.log(document.getElementById('mobilepostcontenteditbutton').attributes.href.value = `./${post.id}/edit_post`);
+	// .ui.header.content-viewer-post-description
+}
 
 /* BOARD FILTER FUNCTIIONALITY */
 
 var postToViewIndex;
 
-var filterState = {
-	categories: [ 
-		true, 
-		true, 
-		true 
-	],
-	dateSetting: 'ALL',
-	date: "",
-	enddate: "",
-	startdate: "",
-	search: "",
-	updateCategory: function(state, index) {
-		this.categories[index] = state;
-		return;
+var boardState = {
+	filters: {
+		categories: [ 
+			true,
+			true,
+			true 
+		],
+		dateSetting: 'ALL',
+		date: "",
+		enddate: "",
+		startdate: "",
+		search: "",
+		updateCategory: function(state, index) {
+			this.categories[index] = state;
+			return;
+		}
+	},
+	action: {
+		type: "",
+		checked: [],
+		resetAction: function() {
+			this.type = "",
+			this.checked = [];
+			return;
+		}
 	}
 };
 
 /* Ajax request, called for each change to a filter element */
-function updateBoard() {
-
-	console.log('updating filters...')
-
+function updateContentViewer(post_id) {
+	console.log('updating post content');
     $.ajax({
         type: 'post',
-        url: './ajax',
-        data: JSON.stringify(filterState),
+        url: './update_content',
+        data: JSON.stringify({ post_id: post_id }),
+        contentType: 'application/json'
+    })
+    .then(function(data) {
+    	if (data) {
+    		console.log(data);
+	    	$('#contentcolumn').html(data);
+	    	return;
+    	}
+    })
+}
+
+function updateBoard() {
+	console.log('updating board');
+    $.ajax({
+        type: 'post',
+        url: './update_board',
+        data: JSON.stringify(boardState.action),
         contentType: 'application/json'
     })
     .then(function(data){
     	if (data) {
+
+			// Reset boardstate
+			boardState.action.resetAction();
+
+        	$('#feedcolumn').html(data);
+        	// console.log(data);
+			$('.ui.checkbox').checkbox({
+			    onChecked: function() {
+			    	boardState.action.checked.push($(this).attr('value'));
+			       	console.log(boardState.action.checked);
+			    },
+			    onUnchecked: function() {
+			       	boardState.action.checked.splice(boardState.action.checked.indexOf($(this).attr('value')), 1);
+			       	console.log(boardState.action.checked);
+			    }
+			});
+			return;
+    	}
+    });
+}
+
+function updateBoardFilters() {
+
+	console.log('updating filters...')
+	console.log(boardState.filters)
+
+    $.ajax({
+        type: 'post',
+        url: './update_filters',
+        data: JSON.stringify(boardState.filters),
+        contentType: 'application/json'
+    })
+    .then(function(data){
+    	if (data) {
+    		// console.log(data);
         	$('#feedcolumn').html(data);
         	// console.log(data);
     	} else {
 			console.log('wot');  		
     	}
     });
+
 }

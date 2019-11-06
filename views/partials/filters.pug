@@ -1,0 +1,28 @@
+#filtercolumn.column
+	form#searchform.ui.form
+		.field
+			input#searchinput(type="text" placeholder="Enter a search term...")
+		#searchinputsubmit.ui.basic.button(onclick="searchformsubmit()")
+			i.fas.fa-search
+	button.ui.basic.button.category-input-button(value=1) 
+		i.fas.fa-star
+	button.ui.basic.button.category-input-button(value=1) 
+		i.fas.fa-sticky-note
+	button.ui.basic.button.category-input-button(value=1)
+		i.fas.fa-exclamation
+	form#calendarform.ui.form
+		#datesettingdropdown.ui.dropdown.basic.button
+			span.text ALL 
+			| &nbsp 
+			i.fas.fa-calendar
+			.menu.calendar-menu
+				.item ALL 
+				.item FROM 
+				.item BEFORE 
+				.item RANGE 
+		#calendar.ui.calendar 
+			input(type="text" placeholder="time")
+		#rangestart.ui.calendar
+			input(type='text' placeholder='Start')
+		#rangeend.ui.calendar
+			input(type='text' placeholder='End')

@@ -1,0 +1,12 @@
+.date-segment-container
+	.ui.header.date-header
+		= day.day
+		|&nbsp
+		= day.month
+		|,&nbsp
+		= day.year
+each post in day.posts
+	if post.pinned
+		.pinned-post
+			p= post.title 
+			i.fas.fa-thumbtack
