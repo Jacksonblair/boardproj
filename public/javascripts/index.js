@@ -106,7 +106,7 @@ $(document).ready(function(){
 		updateBoardFilters();
 	})
 
-	// For  changing tabs on mobile screen
+	// For changing tabs on mobile screen
 	$('.post-segment-container')
 	.on('click', function() {
 		$('.item.content-item').addClass('active');
@@ -114,9 +114,14 @@ $(document).ready(function(){
 		$.tab('change tab', 'second');
 	});
 
-	// function for updating list of available boards
+	// function for updating list of available boards ON PC
 	$('#boardlistdropdown')
 	.on('click', function() {
+		updateBoardList();
+	});
+	// ANd the same for MOBILE
+	$('#boardlistdropdown')
+	.on('click touchstart', function() {
 		updateBoardList();
 	});
 
@@ -253,9 +258,12 @@ function updateBoardFilters() {
         async: false
     })
     .then(function(data){
+    	console.log('updating stuff')
+    	console.log(data)
     	if (data) {
     		// console.log(data);
         	$('#feedcolumn').html(data);
+        	$('#mobilefeed').html(data);
         	// console.log(data);
     	} else {
 			console.log('wot');  		
