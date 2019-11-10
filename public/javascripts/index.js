@@ -182,8 +182,7 @@ function updateBoardList() {
 	console.log('updating list of avail. boards');
     $.ajax({
         type: 'post',
-        url: '/board/update_boardlist',
-        async: false
+        url: '/board/update_boardlist'
     })
     .then(function(data) {
     	console.log(data);
@@ -200,8 +199,7 @@ function updateContentViewer(post_id) {
         type: 'post',
         url: './update_content',
         data: JSON.stringify({ post_id: post_id }),
-        contentType: 'application/json',
-        async: false
+        contentType: 'application/json'
     })
     .then(function(data) {
     	if (data) {
@@ -219,8 +217,7 @@ function updateBoard() {
         type: 'post',
         url: './update_board',
         data: JSON.stringify(boardState.action),
-        contentType: 'application/json',
-        async: false
+        contentType: 'application/json'
     })
     .then(function(data){
     	if (data) {
@@ -230,6 +227,8 @@ function updateBoard() {
 
         	$('#feedcolumn').html(data);
         	// console.log(data);
+
+        	// resetting checkbox functionality (DISSAPEARS ON AJAX RELOAD)
 			$('.ui.checkbox').checkbox({
 			    onChecked: function() {
 			    	boardState.action.checked.push($(this).attr('value'));
@@ -264,6 +263,19 @@ function updateBoardFilters() {
     		// console.log(data);
         	$('#feedcolumn').html(data);
         	$('#mobilefeed').html(data);
+
+        	// resetting tab swap functionality (DISSAPEARS ON AJAX RELOAD)
+
+			$('.menu.tab-menu .item')
+				.tab();
+
+			$('.post-segment-container')
+			.on('click', function() {
+				$('.item.content-item').addClass('active');
+				$('.item.feed-item').removeClass('active');
+				$.tab('change tab', 'second');
+			});
+
         	// console.log(data);
     	} else {
 			console.log('wot');  		
