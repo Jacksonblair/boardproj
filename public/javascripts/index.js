@@ -201,9 +201,10 @@ function updateContentViewer(post_id) {
 	console.log('updating post content');
     $.ajax({
         type: 'post',
+        async: false,
         url: './update_content',
         data: JSON.stringify({ post_id: post_id }),
-        contentType: 'application/json'
+        contentType: 'application/json',
     })
     .then(function(data) {
     	if (data) {
