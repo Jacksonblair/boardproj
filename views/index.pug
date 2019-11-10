@@ -1,13 +1,18 @@
 include partials/header
 
 #wrapper
+	include partials/menugrid
+	include partials/errorgrid
 	#maingrid.ui.stackable.grid
 		.ui.two.wide.column
 		#commoncolumn.ui.twelve.wide.column
 			if user
-				h3 Your boards: 
-				each board in boards
-					a.ui.basic.button(href="/board/" + board.id + "/" )= board.name
+				if boards
+					h3 Your boards: 
+					each board in boards
+						a.ui.basic.button(href="/board/" + board.id + "/" )= board.name
+				else
+					h3 You have no boards.
 			else
 				h3 Login to create a board.
 		.ui.two.wide.column
