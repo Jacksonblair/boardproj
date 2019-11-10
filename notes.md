@@ -256,15 +256,31 @@ FROM posts WHERE id = 14;
 CREATE TABLE boards (
 	id SERIAL PRIMARY KEY,
 	owner_id INTEGER,
-	name VARCHAR(300),
+	name VARCHAR(300) NOT NULL,
+	public BOOLEAN DEFAULT false NOT NULL,
 	FOREIGN KEY (owner_id) REFERENCES users (id)
 )
 
 CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
 	email VARCHAR(300),
-	password VARCHAR(300)
+	password VARCHAR(300),
+	username VARCHAR(69)
 )
+
+CREATE TABLE posts (
+	id SERIAL PRIMARY KEY,
+	title VARCHAR(150) NOT NULL,
+	description VARCHAR(300),
+	content TEXT,
+	category VARCHAR(50) NOT NULL,
+	board_id INTEGER REFERENCES boards (id),
+  	created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  	target_date TIMESTAMP,
+  	author VARCHAR(100),
+  	author_id INTEGER REFERENCES users (id) NOT NULL
+)
+
 
 ALTER TABLE posts 
 ADD COLUMN board_id SERIAL REFERENCES boards(id)
@@ -280,21 +296,6 @@ AND description LIKE ('%orgies%') OR title LIKE ('%party%') OR content LIKE ('%p
 
 
 
-CREATE TABLE posts (
-	id SERIAL PRIMARY KEY,
-	title VARCHAR(150) NOT NULL,
-	description VARCHAR(300),
-	content TEXT,
-	category VARCHAR(50) NOT NULL,
-	board_id INTEGER REFERENCES boards (id),
-  	created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-  	target_date TIMESTAMP,
-  	author VARCHAR(100),
-  	author_id INTEGER REFERENCES users (id) NOT NULL
-)
-
-INSERT INTO posts (title, description, content, category)
-VALUES 
 
 	Add in pin functionality
 
