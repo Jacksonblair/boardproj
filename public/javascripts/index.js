@@ -177,7 +177,8 @@ function updateBoardList() {
 	console.log('updating list of avail. boards');
     $.ajax({
         type: 'post',
-        url: '/board/update_boardlist'
+        url: '/board/update_boardlist',
+        async: false
     })
     .then(function(data) {
     	console.log(data);
@@ -194,7 +195,8 @@ function updateContentViewer(post_id) {
         type: 'post',
         url: './update_content',
         data: JSON.stringify({ post_id: post_id }),
-        contentType: 'application/json'
+        contentType: 'application/json',
+        async: false
     })
     .then(function(data) {
     	if (data) {
@@ -212,7 +214,8 @@ function updateBoard() {
         type: 'post',
         url: './update_board',
         data: JSON.stringify(boardState.action),
-        contentType: 'application/json'
+        contentType: 'application/json',
+        async: false
     })
     .then(function(data){
     	if (data) {
@@ -246,7 +249,8 @@ function updateBoardFilters() {
         type: 'post',
         url: './update_filters',
         data: JSON.stringify(boardState.filters),
-        contentType: 'application/json'
+        contentType: 'application/json',
+        async: false
     })
     .then(function(data){
     	if (data) {
