@@ -149,15 +149,6 @@ function showSiblings(element) {
 	}
 }
 
-function showContent(post) {
-	// document.getElementById('contentviewerpostdeletebutton').attributes.action = `./${post.id}?_method=DELETE`;
-	console.log(document.getElementById('postcontentdeleteform').attributes.action.value = `./${post.id}?_method=DELETE`);
-	console.log(document.getElementById('postcontenteditbutton').attributes.href.value = `./${post.id}/edit_post`);
-	console.log(document.getElementById('mobilepostcontentdeleteform').attributes.action.value = `./${post.id}?_method=DELETE`);
-	console.log(document.getElementById('mobilepostcontenteditbutton').attributes.href.value = `./${post.id}/edit_post`);
-	// .ui.header.content-viewer-post-description
-}
-
 /* BOARD FILTER FUNCTIIONALITY */
 
 var postToViewIndex;
@@ -201,10 +192,9 @@ function updateContentViewer(post_id) {
 	console.log('updating post content');
     $.ajax({
         type: 'post',
-        async: false,
         url: './update_content',
         data: JSON.stringify({ post_id: post_id }),
-        contentType: 'application/json',
+        contentType: 'application/json'
     })
     .then(function(data) {
     	if (data) {
