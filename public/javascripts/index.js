@@ -94,27 +94,8 @@ $(document).ready(function(){
 	})
 
 
-	$('button.category-input-button').click(function() {
-	    var state = $(this).val(); // get value of button
-	    var a = state.slice(0); // copy by value
-	    var index = $(this).index() - 1;
-
-	    if (a === "1") {
-	    	$(this).val("2");
-		    $(this).css({
-		    	'color':"#e6e6e6",
-		    	'background':"white"
-		    })
-		    boardState.filters.categories[index] = false;
-	    } else if (a === "2") {
-	    	$(this).val("1")
-		    $(this).css({
-		    	'color':"black",
-		    	'background':'whitesmoke'
-		    })
-		    boardState.filters.categories[index] = true;
-	    } 
-
+	$('.category-check-item').click(function() {
+		boardState.filters.category = $(this).attr('name');
 	    updateBoardFilters();
 	});
 
@@ -131,6 +112,12 @@ $(document).ready(function(){
 		$('.item.content-item').addClass('active');
 		$('.item.feed-item').removeClass('active');
 		$.tab('change tab', 'second');
+	});
+
+	// function for updating list of available boards
+	$('#boardlistdropdown')
+	.on('click', function() {
+		updateBoardList();
 	});
 
 });
@@ -177,20 +164,12 @@ var postToViewIndex;
 
 var boardState = {
 	filters: {
-		categories: [ 
-			true,
-			true,
-			true 
-		],
+		category: "",
 		dateSetting: 'ALL',
 		date: "",
 		enddate: "",
 		startdate: "",
-		search: "",
-		updateCategory: function(state, index) {
-			this.categories[index] = state;
-			return;
-		}
+		search: ""
 	},
 	action: {
 		type: "",
@@ -202,6 +181,20 @@ var boardState = {
 		}
 	}
 };
+
+function updateBoardList() {
+	console.log('updating list of avail. boards');
+    $.ajax({
+        type: 'post',
+        url: '/board/update_boardlist'
+    })
+    .then(function(data) {
+    	console.log(data);
+    	$('#boardlistmenu').html(data)
+  //   	$('.ui.dropdown')
+		// .dropdown();
+    });
+}
 
 /* Ajax request, called for each change to a filter element */
 function updateContentViewer(post_id) {
@@ -215,7 +208,8 @@ function updateContentViewer(post_id) {
     .then(function(data) {
     	if (data) {
     		console.log(data);
-	    	$('#contentcolumn').html(data);
+	    	$('#contentcontainer').html(data);
+	    	$('#mobilecontentcontainer').html(data);
 	    	return;
     	}
     })

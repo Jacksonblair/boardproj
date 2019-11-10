@@ -7,31 +7,32 @@ var he = require('he');
 
 
 /* GET home page. */
-router.get('/', isLoggedIn, async function(req, res, next) {
+router.get('/', async function(req, res, next) {
 
-	db.query(Board.getBoardsByOwnerId(req.session.userId))
-	.then(boards => {
-		if (!boards.rows[0]) {
-			return res.render('index');
-		} else {
-			return res.render('index', {boards: boards.rows})
-		}
-	})
+	if (req.session.userId) {
+		db.query(Board.getBoardsByOwnerId(req.session.userId))
+		.then(boards => {
+			if (!boards.rows[0]) {
+				return res.render('index');
+			} else {
+				return res.render('index', {boards: boards.rows})
+			}
+		})
+	} else {
+		return res.render('index');
+	}
 
 });
 
 /* GET board */
 router.get('/board/:boardid/', isPublic, isLoggedIn, async function(req, res, next) {
-	db.query(Board.getBoardByBoardId(req.session.userId))
-	.then((board) => {
-		db.query(Board.getPostsByBoardId(req.params.boardid))
-		.then(posts => {
-			if (!posts.rows[0]) {
-				return res.render('board');
-			} else {
-				return res.render('board', {feed: posts.rows, currentboard: board.rows[0]})
-			}
-		})
+	db.query(Board.getPostsByBoardId(req.params.boardid))
+	.then(posts => {
+		if (!posts.rows[0]) {
+			return res.render('board');
+		} else {
+			return res.render('board', {feed: posts.rows})
+		}
 	})
 	.catch((err) => {
 		console.log(err);
@@ -103,13 +104,25 @@ router.put('/board/:boardid/:postid/', isLoggedIn, isOwner, async function(req, 
 	})
 });
 
-router.post('/board/:boardid/update_content', isLoggedIn, isOwner, async function(req, res, next) {
+router.post('/board/update_boardlist', isLoggedIn, async function(req, res, next) {
+	db.query(Board.getBoardsByOwnerId(req.session.userId))
+	.then((boardlist) => {
+		if (boardlist.rows[0]) {
+			console.log(boardlist.rows)
+			return res.render('partials/boardlist', {boardlist: boardlist.rows});
+		}
+	})
+	.catch((err) => {
+		console.log(err);
+	})
+});
+
+router.post('/board/:boardid/update_content', isPublic, isLoggedIn, async function(req, res, next) {
 	// update content element with post content
-	var content = {};
 
 	db.query(Board.getPostByPostId(req.body.post_id))
 	.then((post) => {
-		if (post) {
+		if (post.rows[0]) {
 			return res.render('partials/content', {post: post.rows[0]});
 		}
 	})
@@ -180,6 +193,7 @@ function isPublic(req, res, next) {
 
 function isLoggedIn(req, res, next) {
 	if (req.params.isPublic) {
+		console.log('Public board - skipping login check')
 		return next();
 	} else {
 		if (!(req.session && req.session.userId)) {

@@ -2,16 +2,25 @@
 	.item.menu-title-item
 		span#pretitleitem 
 			a(href="/") EziBoard
-	if currentboard
-		.ui.dropdown.item.board-name
-			.text # 
-			= currentboard.name
-			.menu
-					.item Ajax call to get other boards
-					.item Ajax call to get other boards
-	.ui.right.dropdown.item
-		.text MENU
-		.menu
-			.item(data-value="1") Male
-			.item(data-value="0") Female
+	#boardlistdropdown.ui.dropdown.item
+		.text
+			if currentboard
+				= currentboard.name
+			else
+				| Go to...
+		#boardlistmenu.menu
+			.item wot
+			.item wot
+			include boardlist
+	.right.menu
+		if user
+			a.item(href="/users/profile")
+				.text Profile
+			a.item(href="/users/logout")
+				.text Logout
+		else
+			a.item(href="/users/login")
+				.text Login
+			a.item(href="/users/register")
+				.text Register
 

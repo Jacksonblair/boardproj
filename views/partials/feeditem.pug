@@ -2,7 +2,8 @@ div.post-segment-container(onclick="updateContentViewer(" + post.id +")")
 	.ui.header
 		= post.title
 	.meta
-		span= post.description
+		if post.description
+			span= post.description
 	.extra
 		| From: 
 		a= post.author

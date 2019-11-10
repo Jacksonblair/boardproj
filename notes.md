@@ -4,6 +4,7 @@ ALTER TABLE posts ADD target_date DATE;
 
 	INSERT INTO posts (title, description, content, category, target_date)
 	VALUES ("Bus booking to Sydney", "No description", "
+
 	Bus booking
 	22nd December 2019
 	CANBERRA
@@ -103,7 +104,7 @@ ALTER TABLE posts ADD target_date DATE;
 	Itinerary #
 	7471992652605
 
-	Return Flight: Brisbane to Taipei, Taipei to Brisbane
+	Return Flight: Brisbane to Taipei, Taipei to Sydney
 
 	Confirmation
 	T6P6LQ (China Airlines)
@@ -174,7 +175,7 @@ ALTER TABLE posts ADD target_date DATE;
 	jackson thomas blair
 	2 adults
 
-	Requests	 	
+	Requests	 	 
 	2 Twin Beds, non-smoking room
 
 
@@ -183,11 +184,6 @@ ALTER TABLE posts ADD target_date DATE;
 
 	-----
 
-	Fix filters, specifically dates.
-		Make filter bar prettier
-
-	Add ajax for getting list of available boards.
-
 	Add delete function for boards
 		- Delete all posts from board
 		- Delete board entry
@@ -195,17 +191,7 @@ ALTER TABLE posts ADD target_date DATE;
 	Add holiday event generation
 		- Add them to database, and make option to toggle them on or off				
 
-
-
-
-
 	Multi-date objects?
-
-	Find out a way to show a list of available boards in the menu bar
-		When to show it?
-		- On board page
-
-
 
 
 		- Todays date

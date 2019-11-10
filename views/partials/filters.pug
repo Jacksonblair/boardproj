@@ -4,12 +4,17 @@
 			input#searchinput(type="text" placeholder="Enter a search term...")
 		#searchinputsubmit.ui.basic.button(onclick="searchformsubmit()")
 			i.fas.fa-search
-	button.ui.basic.button.category-input-button(value=1) 
-		i.fas.fa-star
-	button.ui.basic.button.category-input-button(value=1) 
-		i.fas.fa-sticky-note
-	button.ui.basic.button.category-input-button(value=1)
-		i.fas.fa-exclamation
+	.ui.basic.dropdown.button Categories
+		.menu
+			.item.category-check-item(name="ALL")
+				| All
+			.item.category-check-item(name="EVENT")
+				| Events
+			.item.category-check-item(name="ANNOUNCEMENT")
+				| Announcements
+			.item.category-check-item(name="REMINDER")
+				| Reminders
+
 	form#calendarform.ui.form
 		#datesettingdropdown.ui.dropdown.basic.button
 			span.text ALL 

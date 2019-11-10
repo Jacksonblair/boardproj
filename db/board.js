@@ -13,11 +13,14 @@ module.exports = {
 					json_build_object('id', id, 'title', title, 'author', author, 'description', description, 'content', content, 'author_id', author_id, 'pinned', pinned)
 				) AS posts
 				FROM posts
-				WHERE board_id = ${id}
-				GROUP BY target_date`);
+				WHERE board_id = ${id} 
+				GROUP BY target_date ORDER BY target_date`);
 	},
 	getBoardByBoardId: function(id) {
 		return (`SELECT * FROM boards WHERE id = ${id}`);
+	},
+	getAvailableBoards: function(id) {
+		// write me later
 	},
 	getPostByPostId: function(id) {
 		return (`SELECT title, description, 
@@ -44,10 +47,6 @@ module.exports = {
 			post.target_date = null
 		}
 
-		if (!post.description) {
-			post.description = 'no description'
-		}
-
 		return (`INSERT INTO posts (title, description, content, category, target_date, board_id, author, author_id) 
 				VALUES ('${post.title}', '${post.description}', '${post.content}', '${post.category}', '${post.target_date}', ${board_id}, '${user.username}', ${user.id})`)
 	},
@@ -62,10 +61,6 @@ module.exports = {
 
 		if (!post.target_date) {
 			post.target_date = null
-		}
-
-		if (!post.description) {
-			post.description = 'no description'
 		}
 
 		return (`UPDATE posts 
@@ -87,16 +82,16 @@ module.exports = {
 						json_build_object('id', id, 'title', title, 'author', author, 'description', description, 'content', content, 'author_id', author_id, 'pinned', pinned)
 					) AS posts
 					FROM posts
-					WHERE board_id = ${board_id} AND `;
+					WHERE board_id = ${board_id} `;
 
 		/*filter by categories
 		- Get allowed categories (which is an array), remove empties, add quotation marks, and join with commas (to parse in SQL query)
 		- If no categories, just return a dud request */
 
 		var allowedCategories 
-		if (!(allowedCategories = this.getAllowedCategories(filter.categories)))
-			return false;
-		query += `category IN (${allowedCategories}) `;
+		if (!(!filter.category || filter.category === "ALL" )) {
+			query += `AND category = '${filter.category}' `
+		}
 
 		/*filter by search terms*/
 		if (filter.search)
@@ -126,20 +121,5 @@ module.exports = {
 		query += `GROUP BY target_date ORDER BY target_date`
 		console.log(query);
 		return query;
-	},
-
-	getAllowedCategories: function(categories) {
-		// compares to returned database posts
-		var availCategories = ["EVENT", "REMINDER", "ANNOUNCEMENT"];
-
-		// checks truthyness of filter buttons for different categories and returns array to be checked against DB returned posts
-		categories.forEach((category, index) => {
-			if (!category) {
-				availCategories[index] = "";
-			}
-		});
-
-		return availCategories.filter(Boolean).map(function(cat) { return "'" + cat + "'" }).join(', ');;
 	}
-
 }

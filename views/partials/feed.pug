@@ -1,12 +1,6 @@
 #itemfeed.ui.items
 	.ui.left.aligned.grid.feed-item-grid
 		include feedmenu
-	.ui.left.aligned.grid.feed-item-grid
-		#newitemcolumn.sixteen.wide.column
-			.ui.basic.segment
-				a(href="./new_post")
-					i.fas.fa-plus
-					span &nbspAdd new post
 	if feed
 		each day in feed
 			.ui.left.aligned.grid.feed-item-grid

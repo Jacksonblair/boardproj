@@ -1,5 +1,5 @@
-#contentsegment.ui.basic.segment
-	if post
+if post
+	#contentsegment.ui.basic.segment
 		.post.content.buttons
 			a#postcontenteditbutton.ui.tiny.basic.button(href='./' + post.id + '/edit_post') Edit
 			form#postcontentdeleteform(action='./' + post.id + '?_method=DELETE' method='POST')
@@ -7,10 +7,18 @@
 		.ui.divider
 		#contentviewerpostheader.ui.large.header= post.title
 		#contentviewerpostdate= post.target_date
-		#cointenveiewerpostauthor
+		#contentviewerpostauthor
 		| Author:  
 		= post.author
 		.ui.divider
 		#contentviewerpostdescription.ui.header= post.description
 		#contentviewerpostcontent 
 			!= post.content
+else
+	.ui.basic.segment
+		.ui.center.aligned.grey.header 
+			br
+			br
+			br
+			br
+			| Click a post on your feed to view the content.

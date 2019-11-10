@@ -5,11 +5,13 @@ include partials/header
 	include partials/errorgrid
 	#maingrid.ui.stackable.grid
 		.ui.two.wide.column
-		#commoncolumn.ui.twelve.wide.column.main-column
-			h3 Your boards: 
-			h1= boards
-			each board in boards
-				a.ui.basic.button(href="/board/" + board.id + "/" )= board.name
+		#commoncolumn.ui.twelve.wide.column
+			if user
+				h3 Your boards: 
+				each board in boards
+					a.ui.basic.button(href="/board/" + board.id + "/" )= board.name
+			else
+				h3 Login to create a board.
 		.ui.two.wide.column
 
 include partials/footer
