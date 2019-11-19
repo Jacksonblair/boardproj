@@ -78,8 +78,9 @@ a {
 	margin-top: 0px;
 }
 
-#menugrid .column {
-	padding: 0px;
+#menucolumn {
+    padding: 0rem 0rem;
+    margin: 0px;
 }
 
 /* FILTER BAR STYLES*/
@@ -442,6 +443,7 @@ padding: 4px;
 }
 
 
+
 /* MOBILE STYLES */
 
 #mobilefeedcontentcolumn {
@@ -453,6 +455,11 @@ padding: 4px;
     padding: 0px;
 }
 
+#rightmobilemenu {
+    display: none;
+}
+
+
 @media all and (max-device-width: 769px) {
 	#feedcolumn, #contentcolumn {
 		display: none;
@@ -461,4 +468,25 @@ padding: 4px;
 	#mobilefeedcontentcolumn {
 		display: inline-block;
 	}
+
+    #contentsegment {
+        padding: 0px;
+        margin-left: 0px;
+    }
+
+    .ui.grid .column.main-filter-column {
+        display: none;
+    }
+
+    #rightmobilemenu {
+        display: inline-block;
+    }
+
+    #rightmenu {
+        display: none;
+    }
+
+    #menucolumn {
+        padding: 0rem 1rem;
+    }
 }

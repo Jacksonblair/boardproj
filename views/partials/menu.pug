@@ -12,12 +12,17 @@
 			.item wot
 			.item wot
 			include boardlist
-	.right.menu
+	#rightmobilemenu.right.menu
+		.ui.dropdown.item
+			.text
+				i.fas.fa-bars
+			.menu
+				.item Wot
+				.item Wot
+	#rightmenu.right.menu
 		if user
 			a.item(href="/users/profile")
 				.text Profile
-			a.item(href="/users/logout")
-				.text Logout
 		else
 			a.item(href="/users/login")
 				.text Login

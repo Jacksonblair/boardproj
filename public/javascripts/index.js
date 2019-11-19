@@ -241,6 +241,17 @@ function updateBoard() {
 			    }
 			});
 
+			$('.menu.tab-menu .item')
+				.tab();
+
+			$('.post-segment-container')
+			.on('click', function() {
+				$('.item.content-item').addClass('active');
+				$('.item.feed-item').removeClass('active');
+				$.tab('change tab', 'second');
+			});
+			
+
 			return;
     	}
     });

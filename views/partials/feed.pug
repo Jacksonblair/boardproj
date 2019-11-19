@@ -1,6 +1,7 @@
 #itemfeed.ui.items
 	.ui.left.aligned.grid.feed-item-grid
-		include feedmenu
+		if user
+			include feedmenu
 	if feed
 		each day in feed
 			.ui.left.aligned.grid.feed-item-grid
