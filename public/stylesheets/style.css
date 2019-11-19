@@ -285,7 +285,7 @@ input.category-input {
 }
 
 .ui.segment.post-segment:hover {
-	background: #d1d1d1;
+	background: #fff2f2;
 	cursor: pointer;
 }
 
@@ -350,34 +350,18 @@ padding: 4px;
 }
 
 .pinned-post {
-    background: #ffa6a6;
-    border: 1px solid #ff8a8a;
-    border-radius: 4px;
-    padding: 4px;
-    padding-left: 8px;
-    /* padding: 4px; */
-    margin-top: 4px;
-    margin-bottom: 4px;
-    /* color: white; */
-    position: relative;
-    margin-left: 16px;
-    margin-right: 8px;
+    font-size: 1.1rem;
+    color: #ec7878;
+    font-family: Lato-BoldItalic;
+    margin-bottom: 2px;
 }
 
-.pinned-post p {
-    display: inline-block;
-    font-family: Lato-BoldItalic;
-    font-size: 1.2rem;
-    color: white;
-    text-shadow: 1px 1px 1px #677573;
+.pinned-post span {
     margin-left: 16px;
-    margin-bottom: 4px;
 }
 
 .pinned-post i {
-	position: absolute;
-    top: 10px;
-    left: 8px;
+    color: black;
 }
 
 .date-segment-container {
@@ -463,6 +447,10 @@ padding: 4px;
 #mobilefeedcontentcolumn {
 	display: none;
     padding: 0px !important;
+}
+
+#mobilefeed {
+    padding: 0px;
 }
 
 @media all and (max-device-width: 769px) {

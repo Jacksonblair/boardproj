@@ -8,5 +8,7 @@
 each post in day.posts
 	if post.pinned
 		.pinned-post
-			p= post.title 
-			i.fas.fa-thumbtack
+			span
+				i.fas.fa-thumbtack
+				|&nbsp
+			= post.title 

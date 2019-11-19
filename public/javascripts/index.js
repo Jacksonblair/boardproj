@@ -226,6 +226,7 @@ function updateBoard() {
 			boardState.action.resetAction();
 
         	$('#feedcolumn').html(data);
+        	$('#mobilefeed').html(data);
         	// console.log(data);
 
         	// resetting checkbox functionality (DISSAPEARS ON AJAX RELOAD)
@@ -239,6 +240,7 @@ function updateBoard() {
 			       	console.log(boardState.action.checked);
 			    }
 			});
+
 			return;
     	}
     });
