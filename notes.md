@@ -1,5 +1,137 @@
 ### NOTES
 
+
+	-----
+
+	Add DELETE and CREATE function for boards
+		- Delete all posts from board
+		- Delete board entry
+
+	Figure out how to delay semantic tabbing until AJAX request has loaded post content
+
+	Style menu for mobile
+
+	Add holiday event generation
+		- Add them to database, and make option to toggle them on or off				
+
+
+
+SELECT target_date, json_object_agg('post', (json_object_agg('title', title)) FROM posts GROUP BY target_date;
+
+
+you can use json_agg to aggregate arrays over:
+
+	SELECT json_build_object(concat(name, r_id), json_agg(json_build_array("data".value,created_at))) 
+	FROM data group by concat(name, r_id);
+
+	SELECT target_date, 
+		TO_CHAR(target_date, 'MON') As month,
+		EXTRACT(DAY from target_date) AS day,
+		EXTRACT(YEAR from target_date) AS year,
+		json_agg(
+			json_build_object('title', title, 'author', author, 'description', description, 'content', content, 'author_id', author_id)
+		) AS posts
+	FROM posts group by target_date;
+
+
+
+	SELECT json_build_object(
+		target_date, 
+		json_agg(title, id)
+		)
+	FROM posts
+
+	SELECT target_date, 
+		array_agg(title) as title,
+		array_agg(description) as description,
+		array_agg(json_build_object(content) as content,
+		array_agg(category) as category, 
+		array_agg(author) as author,
+		array_agg(author_id) as author_id, 
+		array_agg(id) as author,
+		array_agg(TO_CHAR(target_date, 'MON')) As month, 
+		array_agg(EXTRACT(DAY from target_date)) AS day,
+		array_agg(EXTRACT(YEAR from target_date)) AS year
+		FROM posts GROUP BY target_date;
+
+	getPostsByBoardId: function(id) {
+		return (`SELECT title, description, content, category, author, author_id, id,
+				TO_CHAR(target_date, 'MON') AS month,
+				EXTRACT(DAY from target_date) AS day,
+				EXTRACT(YEAR from target_date) AS year
+				FROM posts 
+				WHERE board_id = ${id} 
+				ORDER BY created`);
+	},
+
+
+INSERT INTO posts (title, description, content, category, target_date, board_id, author, author_id)
+SELECT title, description, content, category, target_date, board_id, author, author_id
+FROM posts WHERE id = 14;
+
+
+
+CREATE TABLE boards (
+	id SERIAL PRIMARY KEY,
+	owner_id INTEGER,
+	name VARCHAR(300) NOT NULL,
+	public BOOLEAN DEFAULT false NOT NULL,
+	FOREIGN KEY (owner_id) REFERENCES users (id)
+);
+
+CREATE TABLE users (
+	id SERIAL PRIMARY KEY,
+	email VARCHAR(300),
+	password VARCHAR(300),
+	username VARCHAR(69)
+);
+
+CREATE TABLE posts (
+	id SERIAL PRIMARY KEY,
+	title VARCHAR(150) NOT NULL,
+	description VARCHAR(300),
+	content TEXT,
+	category VARCHAR(50) NOT NULL,
+	board_id INTEGER REFERENCES boards (id),
+  	created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  	target_date TIMESTAMP,
+  	author VARCHAR(100),
+  	author_id INTEGER REFERENCES users (id) NOT NULL,
+  	pinned BOOLEAN DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE posts 
+ADD COLUMN board_id SERIAL REFERENCES boards(id)
+;
+
+ALTER TABLE posts
+ADD COLUMN pinned BOOLEAN DEFAULT false NOT NULL;
+
+
+SELECT * FROM posts 
+WHERE category IN ('EVENT', 'ANNOUNCEMENT', 'REMINDER')
+AND description LIKE ('%orgies%') OR title LIKE ('%party%') OR content LIKE ('%party%');
+
+
+
+
+	Add in pin functionality
+
+	Edit side menu functionality
+		- Profile
+		- Boards
+		- Messages
+		- Settings
+
+
+
+
+
+
+
+
+
 ALTER TABLE posts ADD target_date DATE;
 
 	INSERT INTO posts (title, description, content, category, target_date)
@@ -181,126 +313,3 @@ ALTER TABLE posts ADD target_date DATE;
 
 
 
-
-	-----
-
-	Add delete function for boards
-		- Delete all posts from board
-		- Delete board entry
-
-	Add holiday event generation
-		- Add them to database, and make option to toggle them on or off				
-
-	Multi-date objects?
-
-
-		- Todays date
-
-
-
-SELECT target_date, json_object_agg('post', (json_object_agg('title', title)) FROM posts GROUP BY target_date;
-
-
-you can use json_agg to aggregate arrays over:
-
-	SELECT json_build_object(concat(name, r_id), json_agg(json_build_array("data".value,created_at))) 
-	FROM data group by concat(name, r_id);
-
-	SELECT target_date, 
-		TO_CHAR(target_date, 'MON') As month,
-		EXTRACT(DAY from target_date) AS day,
-		EXTRACT(YEAR from target_date) AS year,
-		json_agg(
-			json_build_object('title', title, 'author', author, 'description', description, 'content', content, 'author_id', author_id)
-		) AS posts
-	FROM posts group by target_date;
-
-
-
-	SELECT json_build_object(
-		target_date, 
-		json_agg(title, id)
-		)
-	FROM posts
-
-	SELECT target_date, 
-		array_agg(title) as title,
-		array_agg(description) as description,
-		array_agg(json_build_object(content) as content,
-		array_agg(category) as category, 
-		array_agg(author) as author,
-		array_agg(author_id) as author_id, 
-		array_agg(id) as author,
-		array_agg(TO_CHAR(target_date, 'MON')) As month, 
-		array_agg(EXTRACT(DAY from target_date)) AS day,
-		array_agg(EXTRACT(YEAR from target_date)) AS year
-		FROM posts GROUP BY target_date;
-
-	getPostsByBoardId: function(id) {
-		return (`SELECT title, description, content, category, author, author_id, id,
-				TO_CHAR(target_date, 'MON') AS month,
-				EXTRACT(DAY from target_date) AS day,
-				EXTRACT(YEAR from target_date) AS year
-				FROM posts 
-				WHERE board_id = ${id} 
-				ORDER BY created`);
-	},
-
-
-INSERT INTO posts (title, description, content, category, target_date, board_id, author, author_id)
-SELECT title, description, content, category, target_date, board_id, author, author_id
-FROM posts WHERE id = 14;
-
-
-
-CREATE TABLE boards (
-	id SERIAL PRIMARY KEY,
-	owner_id INTEGER,
-	name VARCHAR(300) NOT NULL,
-	public BOOLEAN DEFAULT false NOT NULL,
-	FOREIGN KEY (owner_id) REFERENCES users (id)
-)
-
-CREATE TABLE users (
-	id SERIAL PRIMARY KEY,
-	email VARCHAR(300),
-	password VARCHAR(300),
-	username VARCHAR(69)
-)
-
-CREATE TABLE posts (
-	id SERIAL PRIMARY KEY,
-	title VARCHAR(150) NOT NULL,
-	description VARCHAR(300),
-	content TEXT,
-	category VARCHAR(50) NOT NULL,
-	board_id INTEGER REFERENCES boards (id),
-  	created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-  	target_date TIMESTAMP,
-  	author VARCHAR(100),
-  	author_id INTEGER REFERENCES users (id) NOT NULL
-)
-
-
-ALTER TABLE posts 
-ADD COLUMN board_id SERIAL REFERENCES boards(id)
-;
-
-ALTER TABLE posts
-ADD COLUMN pinned BOOLEAN DEFAULT false NOT NULL;
-
-
-SELECT * FROM posts 
-WHERE category IN ('EVENT', 'ANNOUNCEMENT', 'REMINDER')
-AND description LIKE ('%orgies%') OR title LIKE ('%party%') OR content LIKE ('%party%');
-
-
-
-
-	Add in pin functionality
-
-	Edit side menu functionality
-		- Profile
-		- Boards
-		- Messages
-		- Settings

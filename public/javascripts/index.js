@@ -266,6 +266,17 @@ function updateBoardFilters() {
 
         	// resetting tab swap functionality (DISSAPEARS ON AJAX RELOAD)
 
+			$('.ui.checkbox').checkbox({
+			    onChecked: function() {
+			    	boardState.action.checked.push($(this).attr('value'));
+			       	console.log(boardState.action.checked);
+			    },
+			    onUnchecked: function() {
+			       	boardState.action.checked.splice(boardState.action.checked.indexOf($(this).attr('value')), 1);
+			       	console.log(boardState.action.checked);
+			    }
+			});
+
 			$('.menu.tab-menu .item')
 				.tab();
 
