@@ -18,10 +18,12 @@ a {
 
 #filtergrid {
 	flex-shrink: 0;
+    margin: 0px;
 }
 
 #maingrid {
 	flex-grow: 1;
+    margin: 0px;
     margin-top: 2rem;
 }
 
@@ -29,6 +31,10 @@ a {
 	flex-shrink: 0;
 }
 
+.ui.sticky {
+    margin: 0px;
+
+}
 
 
 /* Menu styles */
@@ -75,7 +81,7 @@ a {
 }
 
 #menugrid {
-	margin-top: 0px;
+    margin: 0px;
 }
 
 #menucolumn {
@@ -459,7 +465,6 @@ padding: 4px;
     display: none;
 }
 
-
 @media all and (max-device-width: 769px) {
 	#feedcolumn, #contentcolumn {
 		display: none;
@@ -484,9 +489,5 @@ padding: 4px;
 
     #rightmenu {
         display: none;
-    }
-
-    #menucolumn {
-        padding: 0rem 1rem;
     }
 }
