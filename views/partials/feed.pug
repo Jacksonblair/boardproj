@@ -10,13 +10,9 @@
 						include feeddate
 					each post in day.posts
 						if post.pinned
-							if user
-								include feeditemfunc
 							include pinnedfeeditem
 					each post in day.posts
 						if !post.pinned
-							if user
-								include feeditemfunc
 							include feeditem
 		.ui.left.aligned.grid.feed-item-grid
 			.column.post-column
