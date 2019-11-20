@@ -1,0 +1,11 @@
+div.post-segment-container(onclick="updateContentViewer(" + post.id +")")
+	.ui.header
+		i.fas.fa-thumbtack
+		|&nbsp
+		= post.title
+	.meta
+		if post.description
+			span= post.description
+	.extra
+		| Posted by: 
+		a= post.author

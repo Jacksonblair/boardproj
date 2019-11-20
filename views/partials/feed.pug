@@ -6,11 +6,18 @@
 		each day in feed
 			.ui.left.aligned.grid.feed-item-grid
 				.column.post-column
-					.ui.basic.segment.post-segment(onclick="showSiblings(this)" value="shown")
+					.ui.basic.segment.post-header-segment(onclick="showSiblings(this)" value="shown")
 						include feeddate
 					each post in day.posts
-						include feeditemfunc
-						include feeditem
+						if post.pinned
+							if user
+								include feeditemfunc
+							include pinnedfeeditem
+					each post in day.posts
+						if !post.pinned
+							if user
+								include feeditemfunc
+							include feeditem
 		.ui.left.aligned.grid.feed-item-grid
 			.column.post-column
 				.ui.basic.segment.feedend-segment

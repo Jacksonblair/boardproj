@@ -3,6 +3,9 @@
 
 	-----
 
+	Add pinned posts 'date header' type element
+
+
 	Add DELETE and CREATE function for boards
 		- Delete all posts from board
 		- Delete board entry
