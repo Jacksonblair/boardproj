@@ -57,12 +57,12 @@ a {
 
 #headermenu {
     border-radius: 0px;
-    border: 1px solid #ec7878;
-    border-top: 4px solid #ec7878;
+    border: none;
     /* box-shadow: none; */
     /* background: none; */
-    box-shadow: 1px 1px 6px #acacac;
+    box-shadow: none;
     border-radius: 0px 0px 8px 8px;
+    padding-top: 8px;
 }
 
 #pretitleitem a {
@@ -278,20 +278,15 @@ input.category-input {
 }
 
 .ui.segment.post-header-segment {
-        padding: 4px;
+    padding: 4px;
     padding-bottom: 0px;
     padding-left: 8px;
     background: white;
-    margin-top: 0px;
     margin-bottom: 0px;
-     border: 1px solid #ec7878; 
-    /* border-left: 4px solid #ec7878; */
-    border-bottom: 3px solid #ec7878;
-    /*box-shadow: 3px 3px 0px #b5b5b5;*/
+    border: 2px solid #ec7878;
+    border-bottom: 5px solid #ec7878;
     transition: 0.3s all;
 }
-
-
 
 .ui.segment.post-header-segment:hover {
 	background: #fff2f2;
@@ -299,7 +294,8 @@ input.category-input {
 }
 
 .ui.segment.feedend-segment {
-padding: 4px;
+    padding: 4px;
+    color: #ec7878;
     margin-top: 16px;
     text-align: center;
     /* background: #f4f4f4; */
@@ -406,7 +402,7 @@ padding: 4px;
 }
 
 .ui.header.post-header-header {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     margin-bottom: 0px;
     font-family: Lato-BoldItalic;
     color: dimgrey;
