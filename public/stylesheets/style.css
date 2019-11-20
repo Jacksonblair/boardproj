@@ -291,6 +291,8 @@ input.category-input {
     transition: 0.3s all;
 }
 
+
+
 .ui.segment.post-header-segment:hover {
 	background: #fff2f2;
 	cursor: pointer;
@@ -309,23 +311,41 @@ padding: 4px;
 }
 
 .post-segment-container {
-    padding-left: 8px;
     min-height: 50px;
     padding-top: 4px;
-    padding-bottom: 4px;
-    border-left: 1px solid #d5d5d5;
-    border-top: 1px solid #d5d5d5;
-    margin-left: 50px;
-    width: calc(100% - 50px);
+    margin-left: 48px;
+    width: calc(100% - 48px);
     display: inline-block;
+    position: relative;
+}
+
+.post-category {
+    position: inline-block;
+    width: 100%;
+    height: 8px;
+    background: #cbcbcb;
+    border-bottom: 1px solid #cbcbcb;
+}
+
+.post-category-event {
+    position: inline-block;
+    width: 100%;
+    height: 16px;
+    background-size: contain;
+    background-image: url(/images/tile01.jpg);
 }
 
 .post-segment-container:hover {
 	background: #f0f0f0;
 }
 
-.post-segment-container .ui.header {
-	margin: 0px;
+.post-segment-container .feed-item-header, .post-segment-container .feed-item-description, .post-segment-container .feed-item-author {
+	padding-left: 8px;
+    margin: 0px;
+}
+
+.post-segment-container .feed-item-header {
+    padding-top: 4px;
 }
 
 .feedmenu-segment-container {

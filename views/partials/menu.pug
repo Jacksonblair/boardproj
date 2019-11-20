@@ -17,8 +17,12 @@
 			.text
 				i.fas.fa-bars
 			.menu
-				.item Wot
-				.item Wot
+				if user
+					a.item(href="/users/profile") Profile
+					a.item(href="/users/logout") Logout
+				else
+					a.item(href="/users/login") Login
+					a.item(href="/users/signup") Sign up
 	#rightmenu.right.menu
 		if user
 			a.item(href="/users/profile")

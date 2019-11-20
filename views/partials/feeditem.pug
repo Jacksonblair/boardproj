@@ -1,9 +1,10 @@
 div.post-segment-container(onclick="updateContentViewer(" + post.id +")")
-	.ui.header
+
+	.ui.header.feed-item-header
 		= post.title
-	.meta
+	.meta.feed-item-description
 		if post.description
 			span= post.description
-	.extra
+	.extra.feed-item-author
 		| Posted by: 
 		a= post.author

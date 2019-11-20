@@ -10,7 +10,7 @@ module.exports = {
 				EXTRACT(DAY from target_date) AS day,
 				EXTRACT(YEAR from target_date) AS year,
 				json_agg(
-					json_build_object('id', id, 'title', title, 'author', author, 'description', description, 'content', content, 'author_id', author_id, 'pinned', pinned)
+					json_build_object('id', id, 'title', title, 'author', author, 'description', description, 'content', content, 'author_id', author_id, 'pinned', pinned, 'category', category)
 				) AS posts
 				FROM posts
 				WHERE board_id = ${id} 
@@ -79,7 +79,7 @@ module.exports = {
 					EXTRACT(DAY from target_date) AS day,
 					EXTRACT(YEAR from target_date) AS year,
 					json_agg(
-						json_build_object('id', id, 'title', title, 'author', author, 'description', description, 'content', content, 'author_id', author_id, 'pinned', pinned)
+						json_build_object('id', id, 'title', title, 'author', author, 'description', description, 'content', content, 'author_id', author_id, 'pinned', pinned, 'category', category)
 					) AS posts
 					FROM posts
 					WHERE board_id = ${board_id} `;
