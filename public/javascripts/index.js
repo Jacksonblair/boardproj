@@ -44,7 +44,7 @@ $(document).ready(function(){
 
 	$('.ui.sticky')
 		.sticky({
-		context: '.ui.column.main-column'
+		context: '#contentcolumn'
 	});
 
 	$('.ui.calendar').calendar({
@@ -225,6 +225,11 @@ function updateContentViewer(post_id) {
     		console.log(data);
 	    	$('#contentcontainer').html(data);
 	    	$('#mobilecontentcontainer').html(data);
+
+    		$('.ui.sticky')
+				.sticky({
+				context: '#contentcolumn'
+			});
 	    	return;
     	}
     })
