@@ -1,6 +1,25 @@
 
 $(document).ready(function(){
 
+	$('.ui.form')
+	  .form({
+	    fields: {
+	      email : 'empty',
+	      password : ['minLength[6]', 'empty']
+	    }
+	  })
+	;
+
+	var monthObj = ['january', 'february', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+
+	$('.ui.header.feed-month-header').each(() => {
+		$(this).text(monthObj[$(this).text() - 1])
+	})
+
+	$('.ui.header.feed-month-header').each(() => {
+		$(this).css("border", "1px solid red")
+	})
+
 	$('.ui.checkbox').checkbox({
 	    onChecked: function() {
 	    	boardState.action.checked.push($(this).attr('value'));

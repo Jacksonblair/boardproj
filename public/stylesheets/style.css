@@ -1,5 +1,6 @@
 body {
 	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-color: whitesmoke;
 }
 
 a {
@@ -19,12 +20,12 @@ a {
 #filtergrid {
 	flex-shrink: 0;
     margin: 0px;
+    display: none;
 }
 
 #maingrid {
 	flex-grow: 1;
     margin: 0px;
-    margin-top: 2rem;
 }
 
 #footer {
@@ -39,11 +40,25 @@ a {
 
 /* Menu styles */
 
-.ui.menu .item.menu-title-item {
-	font-size: 1.7rem;
+.ui.menu .item.menu-title-item, .ui.menu .header.item {
+	font-size: 1.4rem;
 	font-family: Lato-BoldItalic;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px 0px;
+}
+
+.ui.menu .header.item {
+    padding: 8px;
+}
+
+.menu-logo {
+    height: 35px;
+    width: 35px;
+    /* border: 4px solid #e25d50; */
+    background: #ffcccc;
+}
+
+.ui.menu .item.menu-title-item a {
+    color: #e25d50;
 }
 
 .ui.menu .item.sidebar-toggle {
@@ -62,11 +77,6 @@ a {
     /* background: none; */
     box-shadow: none;
     border-radius: 0px 0px 8px 8px;
-    padding-top: 8px;
-}
-
-#pretitleitem a {
-	color: #e25d50;
 }
 
 .ui.dropdown.item.board-name {
@@ -82,6 +92,8 @@ a {
 
 #menugrid {
     margin: 0px;
+    border-bottom: 1px solid lightgrey;
+    background: white;
 }
 
 #menucolumn {
@@ -235,11 +247,11 @@ input.category-input {
 }
 
 #feedcolumn {
-    padding: 8px;
     /*border: 2px solid #a8a8a8;*/
     /*background: white;*/
     /*box-shadow: 1px 1px 6px #dcdcdc;*/
-    border-radius: 8px 8px 0px 0px;
+    border-right: 1px solid #d3d3d3;
+    border-left: 1px solid #d3d3d3;
 }
 
 #contentcolumn {
@@ -254,7 +266,6 @@ input.category-input {
     padding: 16px;
     /* border: 2px solid #a8a8a8; */
     background: white;
-    box-shadow: 1px 1px 6px #dcdcdc;
     border-radius: 8px 8px 0px 0px;
 }
 
@@ -277,22 +288,6 @@ input.category-input {
 	margin-top: 0px;
 }
 
-.ui.segment.post-header-segment {
-    padding: 4px;
-    padding-bottom: 0px;
-    padding-left: 8px;
-    background: white;
-    margin-bottom: 0px;
-    border: 2px solid #ec7878;
-    border-bottom: 5px solid #ec7878;
-    transition: 0.3s all;
-}
-
-.ui.segment.post-header-segment:hover {
-	background: #fff2f2;
-	cursor: pointer;
-}
-
 .ui.segment.feedend-segment {
     padding: 4px;
     color: #ec7878;
@@ -307,12 +302,21 @@ input.category-input {
 }
 
 .post-segment-container {
-    min-height: 50px;
-    padding-top: 4px;
-    /* margin-left: 48px; */
-    width: 100%;
+    min-height: 40px;
+    margin-left: 40px;
+    margin-bottom: 8px;
+    width: calc(100% - 40px);
     display: inline-block;
     position: relative;
+    color: black;
+    transition: 0.3s all;
+    box-sizing: border-box;
+}
+
+.post-segment-container:hover {
+    margin-left: 44px;
+    color: grey;
+    cursor: pointer;
 }
 
 .post-category {
@@ -331,13 +335,10 @@ input.category-input {
     background-image: url(/images/tile01.jpg);
 }
 
-.post-segment-container:hover {
-	background: #f0f0f0;
-}
-
 .post-segment-container .feed-item-header, .post-segment-container .feed-item-description, .post-segment-container .feed-item-author {
 	padding-left: 8px;
     margin: 0px;
+    color: inherit;
 }
 
 .post-segment-container .feed-item-header {
@@ -354,20 +355,38 @@ input.category-input {
     font-family: Lato-BoldItalic;
 }
 
+.ui.checkbox.post-select-checkbox {
+    padding-left: 7px;
+    margin-top: -0.2rem;
+    display: none;
+}
+
 .post-functionality-container {
-    width: 50px;
-    display: inline-block;
-    padding: 0 auto;
-    vertical-align: top;
-    padding-left: 13px;
-    padding-top: 16px;
-    opacity: 0.4;
-    visibility: visible;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    /* display: inline-block; */
+    /* vertical-align: top; */
+    /* padding-left: 13px; */
+    padding-top: 13px;
+    text-align: center;
+    background: #e6e6e6;
+    border: 1px solid lightgrey;
 }
 
 .post-functionality-container:hover {
-    opacity: 1;
+    cursor: pointer;
+    background: none;
+    border: none;
 }	
+
+.post-functionality-container:hover .post-day {
+    display: none;
+}
+
+.post-functionality-container:hover .post-select-checkbox {
+    display: inline-block;
+}
 
 .post-functionality-container .ui.button {
     padding: 4px;
@@ -401,12 +420,24 @@ input.category-input {
 	font-size: 1.5rem;
 }
 
-.ui.header.post-header-header {
-    font-size: 1.5rem;
+.ui.header.feed-year-header {
+    font-size: 1.2rem;
     margin-bottom: 0px;
     font-family: Lato-BoldItalic;
-    color: dimgrey;
+    color: #939393;
     margin-top: 0px;
+    padding: 4px;
+}
+
+.ui.header.feed-month-header {
+    font-size: 1.3rem;
+    margin-bottom: 0px;
+    font-family: Lato-BoldItalic;
+    font-weight: normal;
+    color: #939393;
+    margin-top: 0px;
+    padding: 4px 16px;
+    margin-bottom: 8px;
 }
 
 .ui.items .item {
@@ -464,7 +495,7 @@ input.category-input {
 }
 
 #mobilefeed {
-    padding: 0px;
+    /*padding: 0px;*/
 }
 
 #rightmobilemenu {

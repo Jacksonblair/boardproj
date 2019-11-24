@@ -1,12 +1,12 @@
 ### NOTES
 
+post
 
-	-----
+
 
 	Hide post edit functionality. 
 		Show on EDIT button click
 		Most of the time noone will see it. 
-
 
 	Add DELETE and CREATE function for boards
 		- Delete all posts from board

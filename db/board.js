@@ -5,17 +5,29 @@ module.exports = {
 		return (`SELECT * FROM boards WHERE owner_id = ${id}`);
 	},
 	getPostsByBoardId: function(id) {
-		return (`SELECT target_date, 
-				TO_CHAR(target_date, 'Month') As month,
-				EXTRACT(DAY from target_date) AS day,
-				EXTRACT(YEAR from target_date) AS year,
-				json_agg(
-					json_build_object('id', id, 'title', title, 'author', author, 'description', description, 'content', content, 'author_id', author_id, 'pinned', pinned, 'category', category)
-				) AS posts
-				FROM posts
+		return (`Select 
+				EXTRACT(YEAR from target_date) as year,
+				array_agg(DISTINCT EXTRACT(MONTH from target_date)) as month,
+				array_agg(DISTINCT EXTRACT(DAY from target_date)) as day,
+				array_to_json(array_agg(
+					json_build_object('title', title, 'id', id, 'day', EXTRACT(DAY from target_date), 'month', EXTRACT(MONTH from target_date), 'year', EXTRACT(YEAR from target_date))
+				)) posts
+				from posts
 				WHERE board_id = ${id} 
-				GROUP BY target_date ORDER BY target_date`);
+				group by year;`);
 	},
+	// getPostsByBoardId: function(id) {
+	// 	return (`SELECT target_date, 
+	// 			TO_CHAR(target_date, 'Month') As month,
+	// 			EXTRACT(DAY from target_date) AS day,
+	// 			EXTRACT(YEAR from target_date) AS year,
+	// 			json_agg(
+	// 				json_build_object('id', id, 'title', title, 'author', author, 'description', description, 'content', content, 'author_id', author_id, 'pinned', pinned, 'category', category)
+	// 			) AS posts
+	// 			FROM posts
+	// 			WHERE board_id = ${id} 
+	// 			GROUP BY target_date ORDER BY target_date`);
+	// },
 	getBoardByBoardId: function(id) {
 		return (`SELECT * FROM boards WHERE id = ${id}`);
 	},

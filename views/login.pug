@@ -1,7 +1,26 @@
-h1 Login
-h1=error
+include partials/header
 
-form(action="/users/login" method="POST")
-	input(name="email")
-	input(name="password")
-	button Submit
+#wrapper
+	include partials/menugrid
+	include partials/errorgrid
+	#maingrid.ui.stackable.grid
+		.ui.two.wide.computer.only.column
+		#commoncolumn.ui.twelve.wide.column
+			.ui.three.column.grid
+				.ui.column
+				.ui.column
+					h2.ui.center.aligned.header
+						| Login
+					.ui.segment
+						form.ui.form(action="/users/login" method="POST")
+							.field
+								.label E-mail
+								input(type="email" name="email" placeholder="wot@wot.com")
+							.field
+								.label Password
+								input(type="password" name="password")
+							.ui.fluid.submit.button Submit
+				.ui.column
+		.ui.two.wide.computer.only.column
+
+include partials/footer

@@ -31,6 +31,7 @@ router.get('/board/:boardid/', isPublic, isLoggedIn, async function(req, res, ne
 		if (!posts.rows[0]) {
 			return res.render('board');
 		} else {
+			console.log(posts.rows[0])
 			return res.render('board', {feed: posts.rows})
 		}
 	})
