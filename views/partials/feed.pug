@@ -1,5 +1,6 @@
 #itemfeed.ui.items
-	.ui.left.aligned.grid.feed-item-grid
+	#feedtools
+		include feedtools
 	if feed
 		each row in feed
 			include feedyearheader
@@ -12,9 +13,7 @@
 							include feeditem
 
 
-		.ui.left.aligned.grid.feed-item-grid
-			.column.post-column
-				.ui.basic.segment.feedend-segment
-					p End of feed
+		.ui.basic.segment.feedend-segment
+			p End of feed
 	else
 		.ui.negative.message There are no posts for this board.

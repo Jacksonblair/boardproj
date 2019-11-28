@@ -3,7 +3,7 @@ if post
 		.post.content.buttons
 			a#postcontenteditbutton.ui.tiny.basic.button(href='./' + post.id + '/edit_post') Edit
 			form#postcontentdeleteform(action='./' + post.id + '?_method=DELETE' method='POST')
-				button.ui.tiny.basic.button(type='submit') Delete
+				button.ui.tiny.disabled.basic.button(type='submit') Delete
 		.ui.divider
 		#contentviewerpostheader.ui.large.header= post.title
 		#contentviewerpostdate= post.target_date

@@ -1,17 +1,13 @@
 #headermenu.ui.secondary.menu
 	.header.item
 		a(href="/").menu-logo
-	.item.menu-title-item
-		|#Jacksons-Board
-	#boardlistdropdown.ui.dropdown.item(onclick="")
-		.text
-			if currentboard
-				= currentboard.name
-			else
-				| Go to...
-		#boardlistmenu.menu
-			.item wot
-			.item wot
+	if boardname
+		.item.menu-title-item
+			|@
+			=boardname
+	#boardlistdropdown.ui.dropdown.item
+		.text Go to...
+		#boardlist.menu
 			include boardlist
 	#rightmobilemenu.right.menu.item
 		.ui.dropdown.item

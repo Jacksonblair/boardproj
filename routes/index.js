@@ -26,14 +26,17 @@ router.get('/', async function(req, res, next) {
 
 /* GET board */
 router.get('/board/:boardid/', isPublic, isLoggedIn, async function(req, res, next) {
-	db.query(Board.getPostsByBoardId(req.params.boardid))
-	.then(posts => {
-		if (!posts.rows[0]) {
-			return res.render('board');
-		} else {
-			console.log(posts.rows[0])
-			return res.render('board', {feed: posts.rows})
-		}
+	db.query(Board.getBoardByBoardId(req.params.boardid))
+	.then(board => {
+		db.query(Board.getPostsByBoardId(req.params.boardid))
+		.then(posts => {
+			if (!posts.rows[0]) {
+				return res.render('board');
+			} else {
+				console.log(posts.rows[0])
+				return res.render('board', {feed: posts.rows, boardname: board.rows[0].name})
+			}
+		})
 	})
 	.catch((err) => {
 		console.log(err);
@@ -105,7 +108,7 @@ router.put('/board/:boardid/:postid/', isLoggedIn, isOwner, async function(req, 
 	})
 });
 
-router.post('/board/update_boardlist', isLoggedIn, async function(req, res, next) {
+router.post('/board/update_boardlist', shouldLogIn, async function(req, res, next) {
 	db.query(Board.getBoardsByOwnerId(req.session.userId))
 	.then((boardlist) => {
 		if (boardlist.rows[0]) {
@@ -142,8 +145,7 @@ router.post('/board/:boardid/update_filters', isPublic, isLoggedIn, async functi
 	.then((posts) => {
 		console.log(posts.rows)
 		if (posts.rows) {
-			feed = _.clone(posts.rows);
-			return res.render('partials/feed', {feed: feed})
+			return res.render('partials/feed', {feed: post.rows})
 		}
 	})
 	.catch((err) => {
@@ -165,9 +167,8 @@ router.post('/board/:boardid/update_board', isPublic, isLoggedIn, async function
 		.then(() => {
 			db.query(Board.getPostsByBoardId(req.params.boardid))
 			.then((posts) => {
-				feed = _.clone(posts.rows);
 				console.log(feed);
-				return res.render('partials/feed', {feed: feed});
+				return res.render('partials/feed', {feed: post.rows});
 			})
 		})
 		.catch((err) => {
@@ -203,6 +204,16 @@ function isLoggedIn(req, res, next) {
 			console.log("- user is logged in");
 			return next();
 		}
+	}
+}
+
+function shouldLogIn(req, res, next) {
+	if (!(req.session && req.session.userId)) {
+		console.log("- user needs to log in");
+		return res.send(`<div class="item"> <span class="log-in-message"> <a href="/users/login"> Login </a> to use quick swap </span> </div>`);
+	} else {
+		console.log("- user is logged in");
+		return next();
 	}
 }
 

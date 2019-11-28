@@ -141,7 +141,8 @@ $(document).ready(function(){
 	// ANd the same for MOBILE
 	$('#boardlistdropdown')
 	.on('click touchstart', function() {
-		updateBoardList();
+		if (detectmob())
+			updateBoardList();
 	});
 
 });
@@ -204,10 +205,8 @@ function updateBoardList() {
         url: '/board/update_boardlist'
     })
     .then(function(data) {
-    	console.log(data);
-    	$('#boardlistmenu').html(data)
-  //   	$('.ui.dropdown')
-		// .dropdown();
+    	console.log('wot');
+    	$('#boardlist').html(data)
     });
 }
 
@@ -330,4 +329,20 @@ function updateBoardFilters() {
     	}
     });
 
+}
+
+function detectmob() { 
+ if( navigator.userAgent.match(/Android/i)
+ || navigator.userAgent.match(/webOS/i)
+ || navigator.userAgent.match(/iPhone/i)
+ || navigator.userAgent.match(/iPad/i)
+ || navigator.userAgent.match(/iPod/i)
+ || navigator.userAgent.match(/BlackBerry/i)
+ || navigator.userAgent.match(/Windows Phone/i)
+ ){
+    return true;
+  }
+ else {
+    return false;
+  }
 }
