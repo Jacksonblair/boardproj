@@ -6,9 +6,9 @@ include partials/header
 	#maingrid.ui.stackable.grid
 		.ui.two.wide.computer.only.column
 		#commoncolumn.ui.twelve.wide.column
-			.ui.three.column.grid
-				.ui.column
-				.ui.column
+			.ui.grid
+				.ui.five.wide.computer.only.column
+				.ui.seven.wide.computer.sixteen.wide.mobile.column
 					h2.ui.center.aligned.header
 						| Sign Up
 					.ui.segment
@@ -20,7 +20,7 @@ include partials/header
 								.label Password
 								input(type="password" name="password")
 							.ui.fluid.submit.button Submit
-				.ui.column
+				.ui.five.wide.computer.only.column
 		.ui.two.wide.computer.only.column
 
 include partials/footer
