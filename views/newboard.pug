@@ -1,0 +1,23 @@
+include partials/header
+#wrapper
+	include partials/menugrid
+	#maingrid.ui.stackable.grid
+		.ui.two.wide.column.side-column
+		#commoncolumn.ui.twelve.wide.column.main-column
+			.ui.grid
+				.ui.five.wide.computer.only.column
+				.ui.seven.wide.computer.sixteen.wide.mobile.column
+					h2.ui.center.aligned.header Create a new board
+					form.ui.form(action="./new" method="POST")
+						.field
+							.label New board name	
+							input(type="text" name="name")
+						.field
+							.ui.center.aligned.checkbox
+								input(type="checkbox" name="public")
+								label Is Public?
+						button.ui.fluid.button(type="submit") Submit
+				.ui.five.wide.computer.only.column
+		.ui.two.wide.column.side-column
+
+include partials/footer

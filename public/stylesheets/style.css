@@ -1,6 +1,7 @@
 body {
 	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
     background-color: whitesmoke;
+    overflow-y: scroll;
 }
 
 a {
@@ -222,6 +223,80 @@ input.category-input {
 
 /*Board feed styles*/
 
+
+#boardcolumn {
+    padding: 0px;
+    /* border: 2px solid #a8a8a8; */
+     background: white; 
+    border-left: 1px solid lightgrey;
+    border-right: 1px solid lightgrey;
+}
+.new-board-segment-container {
+    padding: 4px;
+    font-size: 1.2rem;
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    color: black;
+    transition: 0.3s all;
+    border-top: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+    background: white;
+    text-align: center;
+    font-family: Lato-BoldItalic;
+}
+
+.board-segment-container {
+    padding: 8px;
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    color: black;
+    /*text-align: center;*/
+    transition: 0.3s all;
+    border-top: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+    background: white;
+}
+
+.ui.button.board-link-button {
+    font-size: 1.3rem;
+    line-height: 1;
+    padding: 8px;
+    font-family: Lato-BoldItalic, sans-serif;
+}
+
+.board-setting-icon {
+    float: right;
+    font-size: 1.8rem;
+    margin-top: 8px;
+    padding-right: 8px;
+    color: grey;
+    transition: 0.3s all;
+}
+
+.board-setting-icon:hover {
+    color: #aeaeae;
+}
+
+.board-name {
+    font-family: Lato-BoldItalic;
+    transition: 0.3s all;
+    font-size: 1.5rem;
+}
+
+.board-segment-container .board-stats {
+    font-size: 1rem;
+    color: grey;
+}
+
+#activitycolumn {
+    padding: 16px;
+    /* border: 2px solid #a8a8a8; */
+    background: white; 
+    border-right: 1px solid lightgrey;
+}
+
 /* Item feed styles */
 
 #feedtools {
@@ -232,6 +307,15 @@ input.category-input {
     background: white;
     text-align: center;
 }
+
+#feedtools .tools {
+    display: inline-block;
+}
+
+#feedtools .edit-tools {
+    display: none;
+}
+
 
 #contentviewer {
     position: relative;
@@ -361,6 +445,17 @@ input.category-input {
     display: none;
 }
 
+.ui.checkbox.post-select-all-checkbox {
+    display: none;
+    position: absolute;
+    left: 8px;
+    top: 8px;
+}
+
+.ui.header.post-day {
+    display: inline;
+}
+
 .post-functionality-container {
     width: 40px;
     height: 40px;
@@ -380,14 +475,6 @@ input.category-input {
     background: none;
     border: none;
 }	
-
-.post-functionality-container:hover .post-day {
-    display: none;
-}
-
-.post-functionality-container:hover .post-select-checkbox {
-    display: inline-block;
-}
 
 .post-functionality-container .ui.button {
     padding: 4px;

@@ -2,22 +2,33 @@
 
 post
 
+	# CORE FEATURES
+
+		Tools for board feed editing
+			- Edit button
+				- Pressing it shows checkboxes for every post
+				- Save as... (saves as a post-link to one of your boards)
+				- Delete (Should only show if user is owner of board)
+
+		Post-links?
+			+ Add a post to your board from another board.
+			If the original is deleted?
+				idk
+
+		Settings page for boards
+			- Delete button
+			- Public setting
+			- Add users access
+
+		FINAL STYLING
+
+		BROWSER COMPATABILITY
+
+		THEN DONZO, NEXT PROJECT
 
 
-	Hide post edit functionality. 
-		Show on EDIT button click
-		Most of the time noone will see it. 
+	# NON-CORE FEATURES
 
-	Add DELETE and CREATE function for boards
-		- Delete all posts from board
-		- Delete board entry
-
-	Figure out how to delay semantic tabbing until AJAX request has loaded post content
-
-	Style menu for mobile
-
-	Add holiday event generation
-		- Add them to database, and make option to toggle them on or off				
 
 
 

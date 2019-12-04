@@ -10,7 +10,18 @@ module.exports = {
 				array_agg(DISTINCT EXTRACT(MONTH from target_date)) as month,
 				array_agg(DISTINCT EXTRACT(DAY from target_date)) as day,
 				array_to_json(array_agg(
-					json_build_object('title', title, 'id', id, 'day', EXTRACT(DAY from target_date), 'month', EXTRACT(MONTH from target_date), 'year', EXTRACT(YEAR from target_date))
+					json_build_object(
+					'id', id, 
+					'title', title, 
+					'author', author, 
+					'description', description, 
+					'content', content, 
+					'author_id', author_id, 
+					'pinned', pinned, 
+					'category', category, 
+					'day', EXTRACT(DAY from target_date), 
+					'month', EXTRACT(MONTH from target_date), 
+					'year', EXTRACT(YEAR from target_date))
 				)) posts
 				from posts
 				WHERE board_id = ${id} 
@@ -47,6 +58,12 @@ module.exports = {
 		console.log(`UPDATE posts SET pinned = NOT pinned WHERE id IN (${post_ids})`)
 		return (`UPDATE posts SET pinned = NOT pinned WHERE id IN (${post_ids})`)
 	},
+	createBoard: function(board, user_id) {
+		let isPublic = board.public === "on" ? true : false;
+
+		return (`INSERT INTO boards (owner_id, name, public) 
+				VALUES (${user_id}, '${board.name}', ${isPublic})`);
+	},
 	createPost: function(post, board_id, user) {
 
 		// var content = post.content;
@@ -62,8 +79,8 @@ module.exports = {
 		return (`INSERT INTO posts (title, description, content, category, target_date, board_id, author, author_id) 
 				VALUES ('${post.title}', '${post.description}', '${post.content}', '${post.category}', '${post.target_date}', ${board_id}, '${user.username}', ${user.id})`)
 	},
-	deletePost: function(post_id) {
-		return (`DELETE FROM posts WHERE id = ${post_id}`);
+	deletePosts: function(post_ids, board_id) {
+		return (`DELETE FROM posts WHERE id IN(${post_ids}) AND board_id = ${board_id}`);
 	},
 	editPost: function(post, post_id, user) {
 

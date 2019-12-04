@@ -1,9 +1,14 @@
 if user
-	a(href="./new_post") New post
-	|&nbsp|&nbsp
-	a.disabled-link Select All
-	|&nbsp|&nbsp
-	a.disabled-link Save to...
-else
-	a(href="/users/login") Login 
-	span to access user tools
+	#feedtools
+		.tools
+			a(href="./new_post") New post
+			|&nbsp|&nbsp
+			a.feed-tool-edit-link Edit
+		.edit-tools
+			a Save to
+			|&nbsp|&nbsp
+			a(onClick="deletePost()") Delete
+			|&nbsp|&nbsp
+			a.feed-tool-back-link <- Back
+		.ui.huge.checkbox.post-select-all-checkbox
+			input(type="checkbox")

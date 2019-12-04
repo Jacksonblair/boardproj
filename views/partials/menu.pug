@@ -1,10 +1,13 @@
 #headermenu.ui.secondary.menu
 	.header.item
-		a(href="/").menu-logo
+		.menu-logo
 	if boardname
-		.item.menu-title-item
+		a(href="/").item.menu-title-item
 			|@
 			=boardname
+	else
+		a(href="/").item.menu-title-item
+			|@Home
 	#boardlistdropdown.ui.dropdown.item
 		.text Go to...
 		#boardlist.menu

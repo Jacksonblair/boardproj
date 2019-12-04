@@ -58,6 +58,10 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+// basic cache, need to study this more.
+app.use(express.static(__dirname + '/public', {
+  maxAge: '100000' // uses milliseconds per docs
+}))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

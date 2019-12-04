@@ -9,7 +9,7 @@ if post
 		#contentviewerpostdate= post.target_date
 		#contentviewerpostauthor
 		| Author:  
-		= post.author
+		a(href="/users/" + post.author_id + "/")= post.author
 		.ui.divider
 		#contentviewerpostdescription.ui.header= post.description
 		#contentviewerpostcontent 

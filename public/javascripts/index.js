@@ -1,14 +1,42 @@
 
 $(document).ready(function(){
 
+	$('a.feed-tool-edit-link').click(function() {
+		$('#feedtools .tools').css('display', 'none');
+		$('#feedtools .edit-tools').css('display', 'inline');
+		$('.ui.header.post-day').hide();
+		$('.ui.checkbox.post-select-checkbox').show();
+		$('.ui.checkbox.post-select-all-checkbox').show();
+	});
+
+	$('a.feed-tool-back-link').click(function() {
+		$('#feedtools .tools').css('display', 'inline');
+		$('#feedtools .edit-tools').css('display', 'none');
+		$('.ui.header.post-day').show();
+		$('.ui.checkbox.post-select-checkbox').hide();
+		$('.ui.checkbox.post-select-all-checkbox').hide();
+	});
+
+	$('.ui.checkbox.post-select-all-checkbox').checkbox({
+		onChecked: function() {
+			$('.ui.checkbox.post-select-checkbox').each(function() {
+				$(this).checkbox('check')
+			})
+		},
+		onUnchecked: function() {
+			$('.ui.checkbox.post-select-checkbox').each(function() {
+				$(this).checkbox('uncheck')
+			})
+		}
+	});
+
 	$('.ui.form')
 	  .form({
 	    fields: {
 	      email : 'empty',
 	      password : ['minLength[6]', 'empty']
 	    }
-	  })
-	;
+	  });
 
 	var monthObj = ['january', 'february', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
 
@@ -20,7 +48,7 @@ $(document).ready(function(){
 		$(this).css("border", "1px solid red")
 	})
 
-	$('.ui.checkbox').checkbox({
+	$('.ui.checkbox.post-select-checkbox').checkbox({
 	    onChecked: function() {
 	    	boardState.action.checked.push($(this).attr('value'));
 	       	console.log(boardState.action.checked);
@@ -174,9 +202,7 @@ function showSiblings(element) {
 	}
 }
 
-/* BOARD FILTER FUNCTIIONALITY */
-
-var postToViewIndex;
+/* BOARD STATE */
 
 var boardState = {
 	filters: {
@@ -198,6 +224,29 @@ var boardState = {
 	}
 };
 
+function deletePost() {
+	console.log('deleting post(s)');
+    $.ajax({
+        type: 'delete',
+        url: './delete_post',
+        data: JSON.stringify({ checked: boardState.action.checked}),
+        contentType: 'application/json'
+    })
+    .then(function(data) {
+    	if (data) {
+			// Reset boardstate
+			boardState.action.resetAction();
+
+        	$('#feedcolumn').html(data);
+        	$('#mobilefeed').html(data);
+        	// console.log(data);
+
+        	reloadFeedJquery();
+	    	return;
+    	}
+    })
+}
+
 function updateBoardList() {
 	console.log('updating list of avail. boards');
     $.ajax({
@@ -213,6 +262,9 @@ function updateBoardList() {
 /* Ajax request, called for each change to a filter element */
 function updateContentViewer(post_id) {
 	console.log('updating post content');
+
+	$('#contentcontainer').html(`<br><br><div class="ui center aligned header">Loading</div>`);
+
     $.ajax({
         type: 'post',
         url: './update_content',
@@ -252,29 +304,7 @@ function updateBoard() {
         	$('#mobilefeed').html(data);
         	// console.log(data);
 
-        	// resetting checkbox functionality (DISSAPEARS ON AJAX RELOAD)
-			$('.ui.checkbox').checkbox({
-			    onChecked: function() {
-			    	boardState.action.checked.push($(this).attr('value'));
-			       	console.log(boardState.action.checked);
-			    },
-			    onUnchecked: function() {
-			       	boardState.action.checked.splice(boardState.action.checked.indexOf($(this).attr('value')), 1);
-			       	console.log(boardState.action.checked);
-			    }
-			});
-
-			$('.menu.tab-menu .item')
-				.tab();
-
-			$('.post-segment-container')
-			.on('click', function() {
-				$('.item.content-item').addClass('active');
-				$('.item.feed-item').removeClass('active');
-				$.tab('change tab', 'second');
-			});
-			
-
+        	reloadFeedJquery();
 			return;
     	}
     });
@@ -301,34 +331,49 @@ function updateBoardFilters() {
         	$('#mobilefeed').html(data);
 
         	// resetting tab swap functionality (DISSAPEARS ON AJAX RELOAD)
-
-			$('.ui.checkbox').checkbox({
-			    onChecked: function() {
-			    	boardState.action.checked.push($(this).attr('value'));
-			       	console.log(boardState.action.checked);
-			    },
-			    onUnchecked: function() {
-			       	boardState.action.checked.splice(boardState.action.checked.indexOf($(this).attr('value')), 1);
-			       	console.log(boardState.action.checked);
-			    }
-			});
-
-			$('.menu.tab-menu .item')
-				.tab();
-
-			$('.post-segment-container')
-			.on('click', function() {
-				$('.item.content-item').addClass('active');
-				$('.item.feed-item').removeClass('active');
-				$.tab('change tab', 'second');
-			});
-
-        	// console.log(data);
-    	} else {
-			console.log('wot');  		
+        	reloadFeedJquery();
     	}
     });
 
+}
+
+function reloadFeedJquery() {
+	
+	// semantic function for checking individual checkboxes
+	$('.ui.checkbox.post-select-checkbox').checkbox({
+	    onChecked: function() {
+	    	boardState.action.checked.push($(this).attr('value'));
+	       	console.log(boardState.action.checked);
+	    },
+	    onUnchecked: function() {
+	       	boardState.action.checked.splice(boardState.action.checked.indexOf($(this).attr('value')), 1);
+	       	console.log(boardState.action.checked);
+	    }
+	});
+
+	// semantic function for checking ALL checkboxes
+	$('.ui.checkbox.post-select-all-checkbox').checkbox({
+		onChecked: function() {
+			$('.ui.checkbox.post-select-checkbox').each(function() {
+				$(this).checkbox('check')
+			})
+		},
+		onUnchecked: function() {
+			$('.ui.checkbox.post-select-checkbox').each(function() {
+				$(this).checkbox('uncheck')
+			})
+		}
+	});
+
+	$('.menu.tab-menu .item')
+		.tab();
+
+	$('.post-segment-container')
+	.on('click', function() {
+		$('.item.content-item').addClass('active');
+		$('.item.feed-item').removeClass('active');
+		$.tab('change tab', 'second');
+	});
 }
 
 function detectmob() { 

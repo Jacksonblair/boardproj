@@ -1,6 +1,5 @@
 #itemfeed.ui.items
-	#feedtools
-		include feedtools
+	include feedtools
 	if feed
 		each row in feed
 			include feedyearheader
@@ -16,4 +15,4 @@
 		.ui.basic.segment.feedend-segment
 			p End of feed
 	else
-		.ui.negative.message There are no posts for this board.
+		.ui.center.aligned.header There are no posts here :(

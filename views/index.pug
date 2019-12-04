@@ -5,16 +5,28 @@ include partials/header
 	include partials/errorgrid
 	#maingrid.ui.stackable.grid
 		.ui.two.wide.column
-		#commoncolumn.ui.twelve.wide.column
+		#boardcolumn.ui.four.wide.column
 			if user
-				if boards
-					h3 Your boards: 
-					each board in boards
-						a.ui.basic.button(href="/board/" + board.id + "/" )= board.name
-				else
-					h3 You have no boards.
+				.new-board-segment-container 
+					a(href="/board/new")
+						i.fas.fa-plus
+						|&nbsp New board
+				each board in boards
+					.board-segment-container
+						a.board-setting-icon.fas.fa-cog(href="/board/" + board.id + "/settings/")
+						a.board-name(href="/board/" + board.id + "/" )
+							= board.name
+						p.board-stats
+							span
+								| 62 Posts
+								| 7 Users
+
 			else
-				h3 Login to create a board.
+				.ui.basic.segment
+					.ui.center.aligned.header Login to create a board.
+		#activitycolumn.ui.eight.wide.column
+			.ui.large.grey.header Activity
+			.ui.divider
 		.ui.two.wide.column
 
 include partials/footer
