@@ -161,17 +161,25 @@ $(document).ready(function(){
 		$.tab('change tab', 'second');
 	});
 
-	// function for updating list of available boards ON PC
-	$('#boardlistdropdown')
+	// functions for updating list of available boards
+	// 
+	$('#accessibleboardlistdropdown')
 	.on('click', function() {
-		updateBoardList();
+		updateAccessibleBoardList();
+	}); 
+
+	$('.edit-tools #editableboardlistdropdown')
+	.on('click', function() {
+		console.log('opened feed tools dropdown');
+		updateEditableBoardList();
 	});
+
 	// ANd the same for MOBILE
-	$('#boardlistdropdown')
-	.on('click touchstart', function() {
-		if (detectmob())
-			updateBoardList();
-	});
+	// $('#boardlistdropdown')
+	// .on('click touchstart', function() {
+	// 	if (detectmob())
+	// 		updateBoardList();
+	// });
 
 });
 
@@ -221,10 +229,43 @@ var boardState = {
 			this.checked = [];
 			return;
 		}
+	},
+	boards: {
+		hasLoadedAccessibleList: false,
+		hasLoadedEditableList: false
 	}
 };
 
+function linkPost() {
+	if (boardState.action.checked.length < 1) {
+		console.log('post link invalid, no posts selected.')
+		return;
+	} 
+
+	console.log('linking post(s)');
+
+	$.ajax({
+        type: 'delete',
+        url: './link_post',
+        data: JSON.stringify({ checked: boardState.action.checked}),
+        contentType: 'application/json'
+    })
+    .then(function(data) {
+    	if (data) {
+			// We will see.
+	    	return;
+    	}
+    })
+}
+
 function deletePost() {
+
+	// if no posts selected.
+	if (boardState.action.checked.length < 1) {
+		console.log('delete invalid, no posts selected.')
+		return;
+	}
+
 	console.log('deleting post(s)');
     $.ajax({
         type: 'delete',
@@ -237,25 +278,46 @@ function deletePost() {
 			// Reset boardstate
 			boardState.action.resetAction();
 
-        	$('#feedcolumn').html(data);
-        	$('#mobilefeed').html(data);
-        	// console.log(data);
-
+        	reloadFeedPosts(data);
         	reloadFeedJquery();
 	    	return;
     	}
     })
 }
 
-function updateBoardList() {
+function updateAccessibleBoardList() {
+	// Used 'cached' board list instead of new AJAX call
+	if (boardState.boards.hasLoadedList) {
+		console.log('list cached. No need to reload.');
+		return;
+	}
+
 	console.log('updating list of avail. boards');
     $.ajax({
         type: 'post',
-        url: '/board/update_boardlist'
+        url: '/board/update_boardlist_access'
     })
     .then(function(data) {
-    	console.log('wot');
-    	$('#boardlist').html(data)
+    	boardState.boards.hasLoadedAccessibleList = true; // prevent redundant boardlist load
+    	$('#accessibleboardlist').html(data)
+    });
+}
+
+function updateEditableBoardList() {
+	// Used 'cached' board list instead of new AJAX call
+	if (boardState.boards.hasLoadedList) {
+		console.log('list cached. No need to reload.');
+		return;
+	}
+
+	console.log('updating list of avail. boards');
+    $.ajax({
+        type: 'post',
+        url: '/board/update_editable_boardlist'
+    })
+    .then(function(data) {
+    	boardState.boards.hasLoadedEditableList = true; // prevent redundant boardlist load
+    	$('#editableboardlistdropdown #editableboardlist').html(data)
     });
 }
 
@@ -300,10 +362,7 @@ function updateBoard() {
 			// Reset boardstate
 			boardState.action.resetAction();
 
-        	$('#feedcolumn').html(data);
-        	$('#mobilefeed').html(data);
-        	// console.log(data);
-
+        	reloadFeedPosts(data);
         	reloadFeedJquery();
 			return;
     	}
@@ -326,15 +385,16 @@ function updateBoardFilters() {
     	console.log('updating stuff')
     	console.log(data)
     	if (data) {
-    		// console.log(data);
-        	$('#feedcolumn').html(data);
-        	$('#mobilefeed').html(data);
-
-        	// resetting tab swap functionality (DISSAPEARS ON AJAX RELOAD)
+        	reloadFeedPosts(data);
         	reloadFeedJquery();
     	}
     });
 
+}
+
+function reloadFeedPosts(data) {
+	$('#itemfeed').html(data);
+	$('#mobileitemfeed').html(data);
 }
 
 function reloadFeedJquery() {

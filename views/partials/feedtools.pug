@@ -3,9 +3,11 @@ if user
 		.tools
 			a(href="./new_post") New post
 			|&nbsp|&nbsp
-			a.feed-tool-edit-link Edit
+			a.feed-tool-edit-link Select
 		.edit-tools
-			a Save to
+			#editableboardlistdropdown.ui.dropdown 
+				.text Save to
+				#editableboardlist.menu
 			|&nbsp|&nbsp
 			a(onClick="deletePost()") Delete
 			|&nbsp|&nbsp

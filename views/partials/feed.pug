@@ -1,18 +1,17 @@
-#itemfeed.ui.items
-	include feedtools
-	if feed
-		each row in feed
-			include feedyearheader
-			each month in row.month
-				include feedmonthheader
-				each day in row.day
-					each post in row.posts
-						if post.day === day & post.month === month
-							include feeditemday
-							include feeditem
+if feed
+	each row in feed
+		include feedyearheader
+		each month in row.month
+			include feedmonthheader
+			each day in row.day
+				each post in row.posts
+					if post.day === day & post.month === month
+						include feeditemday
+						include feeditem
 
 
-		.ui.basic.segment.feedend-segment
-			p End of feed
-	else
-		.ui.center.aligned.header There are no posts here :(
+	.ui.basic.segment.feedend-segment
+		p End of feed
+else
+	.ui.basic.segment
+		.ui.center.aligned.grey.header There are no posts here :(

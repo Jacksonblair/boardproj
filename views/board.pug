@@ -12,13 +12,17 @@ include partials/header
 				a.item.feed-item.active(data-tab="first") Feed
 				a.item.content-item(data-tab="second") Content
 			#mobilefeed.ui.bottom.attached.tab.segment.active(data-tab="first")
-				include partials/feed
+				include partials/feedtools
+				#mobileitemfeed
+					include partials/feed
 			.ui.bottom.attached.tab.segment(data-tab="second")
 				#mobilecontentcontainer
 					include partials/content
 
 		#feedcolumn.ui.five.wide.computer.eight.wide.tablet.column
-			include partials/feed
+				include partials/feedtools
+				#itemfeed
+					include partials/feed
 		#contentcolumn.ui.seven.wide.computer.eight.wide.tablet.column.main-column
 			.ui.sticky
 				#contentcontainer

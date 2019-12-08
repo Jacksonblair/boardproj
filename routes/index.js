@@ -65,12 +65,12 @@ router.get('/board/:boardid/', isPublic, isLoggedIn, async function(req, res, ne
 
 
 /* GET new post page */
-router.get('/board/:boardid/new_post', isLoggedIn, async function(req, res, next) {
+router.get('/board/:boardid/new_post', isLoggedIn, async function(req, res) {
 	res.render('submitpost');
 });
 
 /* POST new post to board */
-router.post('/board/:boardid/new_post', isLoggedIn, isOwnerOfBoard, async function(req, res, next) {
+router.post('/board/:boardid/new_post', isLoggedIn, isOwnerOfBoard, async function(req, res) {
 
 	// console.log(Board.createPost(req.body, req.params.boardid, req.user));
 	console.log(req.body.content);
@@ -86,8 +86,19 @@ router.post('/board/:boardid/new_post', isLoggedIn, isOwnerOfBoard, async functi
 	})
 });
 
-/* DELETE post from board */
-router.delete('/board/:boardid/delete_post', isLoggedIn, isOwnerOfBoard, async function(req, res, next) {
+/* AJAX create linked_post */
+router.post('/board/:boardid/link_post', isLoggedIn, async function(req, res) {
+
+	// Call board query to create a linked post
+	// Posts can be only linked from one board to another, but not to their original board.
+	// So the next action after creating the linked post is to send a confirmation, no need to reload feed.
+
+	db.query(Board.linkPost)
+
+});
+
+/* AJAX DELETE post from board */
+router.delete('/board/:boardid/delete_post', isLoggedIn, isOwnerOfBoard, async function(req, res) {
 	db.query(Board.deletePosts(req.body.checked, req.params.boardid))
 	.then(() => {
 		console.log(`- deleted post(s) with id(s): ${req.body.checked}`);
@@ -103,6 +114,8 @@ router.delete('/board/:boardid/delete_post', isLoggedIn, isOwnerOfBoard, async f
 		return res.redirect('/');
 	})
 });
+
+/* PAGE RELOAD DELET */
 
 /* GET update post page */
 router.get('/board/:boardid/:postid/edit_post', isLoggedIn, async function(req, res, next) {
@@ -133,17 +146,38 @@ router.put('/board/:boardid/:postid/', isLoggedIn, isOwnerOfBoard, async functio
 	})
 });
 
-router.post('/board/update_boardlist', shouldLogIn, async function(req, res, next) {
+/* AJAX POST get list of accessible boards */
+router.post('/board/update_boardlist_access', shouldLogIn, async function(req, res, next) {
+
 	db.query(Board.getBoardsByOwnerId(req.session.userId))
 	.then((boardlist) => {
 		if (boardlist.rows[0]) {
-			console.log(boardlist.rows)
-			return res.render('partials/boardlist', {boardlist: boardlist.rows});
+
+			// renders partial with boardlist depending on whether click is from menu or feed tools
+			return res.render('partials/accessibleboardlist', {boardlist: boardlist.rows});
 		}
 	})
 	.catch((err) => {
 		console.log(err);
 	})
+
+});
+
+/* AJAX POST get list of editable boards */
+router.post('/board/update_editable_boardlist', shouldLogIn, async function(req, res, next) {
+
+	db.query(Board.getBoardsByOwnerId(req.session.userId))
+	.then((boardlist) => {
+		if (boardlist.rows[0]) {
+
+			// renders partial with boardlist depending on whether click is from menu or feed tools
+			return res.render('partials/editableboardlist', {boardlist: boardlist.rows});
+		}
+	})
+	.catch((err) => {
+		console.log(err);
+	})
+
 });
 
 router.post('/board/:boardid/update_content', isPublic, isLoggedIn, async function(req, res, next) {

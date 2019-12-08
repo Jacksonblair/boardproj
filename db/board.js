@@ -76,11 +76,73 @@ module.exports = {
 			post.target_date = null
 		}
 
-		return (`INSERT INTO posts (title, description, content, category, target_date, board_id, author, author_id) 
-				VALUES ('${post.title}', '${post.description}', '${post.content}', '${post.category}', '${post.target_date}', ${board_id}, '${user.username}', ${user.id})`)
+		return (`INSERT INTO posts (
+					title, 
+					description, 
+					content, 
+					category, 
+					target_date, 
+					board_id, 
+					author, 
+					author_id
+					) 
+				VALUES (
+					'${post.title}', 
+					'${post.description}', 
+					'${post.content}', 
+					'${post.category}', 
+					'${post.target_date}', 
+					${board_id}, 
+					'${user.username}', 
+					${user.id}
+					)`
+				)
+	},
+	createLinkPost: function(post, board_id, user, origPost) {
+
+		post.content = post.content.replace(/'/g, "''")
+
+		if (!post.target_date) {
+			post.target_date = null
+		}
+
+		return (`INSERT INTO posts (
+			title, 
+			description, 
+			content, 
+			category, 
+			target_date, 
+			board_id, 
+			author, 
+			author_id,
+			post_link_id,
+			post_link_orig_author,
+			post_link_orig_board,
+			post_link_orig_exists
+			) 
+		VALUES (
+			'${post.title}', 
+			'${post.description}', 
+			'${post.content}', 
+			'${post.category}', 
+			'${post.target_date}', 
+			${board_id}, 
+			'${user.username}', 
+			${user.id},
+			${origPost.id},
+			${origPost.username},
+			${origPost.board_id},
+			TRUE
+			)`
+		)
+
 	},
 	deletePosts: function(post_ids, board_id) {
-		return (`DELETE FROM posts WHERE id IN(${post_ids}) AND board_id = ${board_id}`);
+
+		let parsedPost_ids;
+		parsedPost_ids = post_ids.length < 1 ? null : post_ids;
+
+		return (`DELETE FROM posts WHERE id IN(${parsedPost_ids}) AND board_id = ${board_id}`);
 	},
 	editPost: function(post, post_id, user) {
 

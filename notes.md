@@ -10,15 +10,55 @@ post
 				- Save as... (saves as a post-link to one of your boards)
 				- Delete (Should only show if user is owner of board)
 
-		Post-links?
-			+ Add a post to your board from another board.
-			If the original is deleted?
-				idk
+# Post-links?
+	+ Add a post to your board from another board.
+	If the original is deleted?
+		Make post-link a new type of schema in the db
+		Or just add it as a post to the board? With a post_link_id, post_link_orig_author, post_link_orig_board
+
+			What if someone updates the linked post?
+				Whenever a post is updated, it should look for posts that have a post_link_id matching the post id
+				... And then update those posts to match.
+
+				...
+
+			What if someone deletes the linked post?
+				If a post is deleted, it can look for matching post links, and update them to show that the original post has been deleted.
+
+
+
+ALTER TABLE posts
+ADD COLUMN 
+post_link_id INTEGER REFERENCES posts (id) DEFAULT NULL,
+post_link_orig_author VARCHAR(100) DEFAULT NULL,
+post_link_orig_board INTEGER REFERENCES posts (board_id) DEFAULT NULL,
+post_link_orig_exists BOOLEAN DEFAULT FALSE;
+
+
+CREATE TABLE posts (
+	id SERIAL PRIMARY KEY,
+	title VARCHAR(150) NOT NULL,
+	description VARCHAR(300),
+	content TEXT,
+	category VARCHAR(50) NOT NULL,
+	board_id INTEGER REFERENCES boards (id),
+  	created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  	target_date TIMESTAMP,
+  	author VARCHAR(100),
+  	author_id INTEGER REFERENCES users (id) NOT NULL,
+  	pinned BOOLEAN DEFAULT false NOT NULL
+);
+
+
+
 
 		Settings page for boards
 			- Delete button
 			- Public setting
 			- Add users access
+
+		Activity page for index
+			- Last x posts for boards;
 
 		FINAL STYLING
 
@@ -120,6 +160,18 @@ CREATE TABLE posts (
 ALTER TABLE posts 
 ADD COLUMN board_id SERIAL REFERENCES boards(id)
 ;
+
+
+ALTER TABLE posts
+ADD COLUMN
+post_link_orig_exists BOOLEAN DEFAULT FALSE;
+
+ALTER TABLE posts
+ADD COLUMN 
+post_link_id INTEGER REFERENCES posts (id) DEFAULT NULL,
+post_link_orig_author VARCHAR(100) DEFAULT NULL,
+post_link_orig_board INTEGER DEFAULT NULL,
+post_link_orig_exists BOOLEAN DEFAULT FALSE;
 
 ALTER TABLE posts
 ADD COLUMN pinned BOOLEAN DEFAULT false NOT NULL;

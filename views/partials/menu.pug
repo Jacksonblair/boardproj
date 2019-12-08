@@ -8,10 +8,10 @@
 	else
 		a(href="/").item.menu-title-item
 			|@Home
-	#boardlistdropdown.ui.dropdown.item
-		.text Go to...
-		#boardlist.menu
-			include boardlist
+	if user
+		#accessibleboardlistdropdown.ui.dropdown.item
+			.text Go to...
+			#accessibleboardlist.menu
 	#rightmobilemenu.right.menu.item
 		.ui.dropdown.item
 			.text

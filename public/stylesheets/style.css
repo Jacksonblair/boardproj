@@ -93,21 +93,16 @@ a.disabled-link {
     border-radius: 0px 0px 8px 8px;
 }
 
-.ui.dropdown.item.board-name {
-	font-size: 1.2rem;
-    font-family: Lato-BoldItalic;
-    padding: 8px 16px;
-    border: 3px dashed #e0e0e0;
-    border-radius: 8px;
-    /* border-bottom: 4px solid #e0e0e0; */
-    margin: 8px;
-    margin-left: 16px;
+.ui.menu .ui.dropdown.item .menu .item-board-name {
+
 }
 
 #menugrid {
     margin: 0px;
     border-bottom: 1px solid lightgrey;
     background: white;
+    z-index: 1;
+    box-shadow: 0 4px 2px -2px #00000029;
 }
 
 #menucolumn {
@@ -232,14 +227,13 @@ input.category-input {
     border-right: 1px solid lightgrey;
 }
 .new-board-segment-container {
-    padding: 4px;
+    padding: 8px;
     font-size: 1.2rem;
     width: 100%;
     display: inline-block;
     position: relative;
     color: black;
     transition: 0.3s all;
-    border-top: 1px solid lightgrey;
     border-bottom: 1px solid lightgrey;
     background: white;
     text-align: center;
@@ -248,6 +242,7 @@ input.category-input {
 
 .board-segment-container {
     padding: 8px;
+    padding-left: 16px;
     width: 100%;
     display: inline-block;
     position: relative;
@@ -313,7 +308,7 @@ input.category-input {
 }
 
 #feedtools .edit-tools {
-    display: none;
+    /*display: none;*/
 }
 
 
@@ -396,9 +391,7 @@ input.category-input {
     background: white;
 }
 
-.post-segment-container:hover, .post-segment-container:focus  {
-    padding-left: 36px;
-    padding-right: 4px;
+.post-segment-container:hover, .post-segment-container:focus  { 
     color: #00B7FF;
     cursor: pointer;
 }
