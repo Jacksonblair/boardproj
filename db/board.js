@@ -42,8 +42,17 @@ module.exports = {
 	getBoardByBoardId: function(id) {
 		return (`SELECT * FROM boards WHERE id = ${id}`);
 	},
-	getAvailableBoards: function(id) {
-		// write me later
+	getAccessibleBoards: function(user_id) {
+		return (`SELECT * FROM boards 
+				JOIN boards_access 
+				ON (boards.id = boards_access.board_id) 
+				WHERE boards_access.user_id = ${user_id};`)
+	},
+	getWriteableBoards: function(user_id, board_id) {
+		return (`SELECT * FROM boards 
+				JOIN boards_access ON (boards.id = boards_access.board_id)
+				WHERE boards_access.user_id = ${user_id}
+				AND (boards_access.can_make_posts OR boards_access.is_owner);`)
 	},
 	getPostByPostId: function(id) {
 		return (`SELECT title, description, 

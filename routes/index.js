@@ -147,9 +147,9 @@ router.put('/board/:boardid/:postid/', isLoggedIn, isOwnerOfBoard, async functio
 });
 
 /* AJAX POST get list of accessible boards */
-router.post('/board/update_boardlist_access', shouldLogIn, async function(req, res, next) {
+router.post('/board/update_accessible_boardlist', shouldLogIn, async function(req, res, next) {
 
-	db.query(Board.getBoardsByOwnerId(req.session.userId))
+	db.query(Board.getAccessibleBoards(req.session.userId))
 	.then((boardlist) => {
 		if (boardlist.rows[0]) {
 
@@ -164,14 +164,13 @@ router.post('/board/update_boardlist_access', shouldLogIn, async function(req, r
 });
 
 /* AJAX POST get list of editable boards */
-router.post('/board/update_editable_boardlist', shouldLogIn, async function(req, res, next) {
+router.post('/board/update_writeable_boardlist', shouldLogIn, async function(req, res, next) {
 
-	db.query(Board.getBoardsByOwnerId(req.session.userId))
+	db.query(Board.getWriteableBoards(req.session.userId))
 	.then((boardlist) => {
 		if (boardlist.rows[0]) {
-
 			// renders partial with boardlist depending on whether click is from menu or feed tools
-			return res.render('partials/editableboardlist', {boardlist: boardlist.rows});
+			return res.render('partials/writeableboardlist', {boardlist: boardlist.rows});
 		}
 	})
 	.catch((err) => {
@@ -236,6 +235,7 @@ router.post('/board/:boardid/update_board', isPublic, isLoggedIn, async function
 	}
 });
 
+// Checks whether a board is public or not (non-public boards require access)
 function isPublic(req, res, next) {
 	db.query(Board.getBoardByBoardId(req.params.boardid))
 	.then((board) => {
@@ -254,7 +254,7 @@ function isLoggedIn(req, res, next) {
 	// isPublic is set on GET requests to view boards
 	// if the board is public, this check can be skipped
 	if (req.params.isPublic) {
-		console.log('Public board - skipping login check')
+		console.log('- public board - skipping login check')
 		return next();
 	} else {
 		if (!(req.session && req.session.userId)) {
@@ -266,6 +266,7 @@ function isLoggedIn(req, res, next) {
 	}
 }
 
+// Tells a user whether they should log in to use functionality
 function shouldLogIn(req, res, next) {
 	if (!(req.session && req.session.userId)) {
 		console.log("- user needs to log in");

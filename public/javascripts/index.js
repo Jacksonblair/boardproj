@@ -168,10 +168,10 @@ $(document).ready(function(){
 		updateAccessibleBoardList();
 	}); 
 
-	$('.edit-tools #editableboardlistdropdown')
+	$('.edit-tools #writeableboardlistdropdown')
 	.on('click', function() {
 		console.log('opened feed tools dropdown');
-		updateEditableBoardList();
+		updateWriteableBoardList();
 	});
 
 	// ANd the same for MOBILE
@@ -232,7 +232,7 @@ var boardState = {
 	},
 	boards: {
 		hasLoadedAccessibleList: false,
-		hasLoadedEditableList: false
+		hasLoadedWriteableList: false
 	}
 };
 
@@ -287,7 +287,7 @@ function deletePost() {
 
 function updateAccessibleBoardList() {
 	// Used 'cached' board list instead of new AJAX call
-	if (boardState.boards.hasLoadedList) {
+	if (boardState.boards.hasLoadedAccessibleList) {
 		console.log('list cached. No need to reload.');
 		return;
 	}
@@ -295,7 +295,7 @@ function updateAccessibleBoardList() {
 	console.log('updating list of avail. boards');
     $.ajax({
         type: 'post',
-        url: '/board/update_boardlist_access'
+        url: '/board/update_accessible_boardlist'
     })
     .then(function(data) {
     	boardState.boards.hasLoadedAccessibleList = true; // prevent redundant boardlist load
@@ -303,9 +303,9 @@ function updateAccessibleBoardList() {
     });
 }
 
-function updateEditableBoardList() {
+function updateWriteableBoardList() {
 	// Used 'cached' board list instead of new AJAX call
-	if (boardState.boards.hasLoadedList) {
+	if (boardState.boards.hasLoadedWriteableList) {
 		console.log('list cached. No need to reload.');
 		return;
 	}
@@ -313,11 +313,12 @@ function updateEditableBoardList() {
 	console.log('updating list of avail. boards');
     $.ajax({
         type: 'post',
-        url: '/board/update_editable_boardlist'
+        url: '/board/update_writeable_boardlist'
     })
     .then(function(data) {
-    	boardState.boards.hasLoadedEditableList = true; // prevent redundant boardlist load
-    	$('#editableboardlistdropdown #editableboardlist').html(data)
+    	boardState.boards.hasLoadedWriteableList = true; // prevent redundant boardlist load
+    	console.log(data);
+    	$('#writeableboardlistdropdown #writeableboardlist').html(data)
     });
 }
 

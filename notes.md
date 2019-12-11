@@ -10,47 +10,10 @@ post
 				- Save as... (saves as a post-link to one of your boards)
 				- Delete (Should only show if user is owner of board)
 
-# Post-links?
-	+ Add a post to your board from another board.
-	If the original is deleted?
-		Make post-link a new type of schema in the db
-		Or just add it as a post to the board? With a post_link_id, post_link_orig_author, post_link_orig_board
-
-			What if someone updates the linked post?
-				Whenever a post is updated, it should look for posts that have a post_link_id matching the post id
-				... And then update those posts to match.
-
-				...
-
-			What if someone deletes the linked post?
-				If a post is deleted, it can look for matching post links, and update them to show that the original post has been deleted.
-
-
-
-ALTER TABLE posts
-ADD COLUMN 
-post_link_id INTEGER REFERENCES posts (id) DEFAULT NULL,
-post_link_orig_author VARCHAR(100) DEFAULT NULL,
-post_link_orig_board INTEGER REFERENCES posts (board_id) DEFAULT NULL,
-post_link_orig_exists BOOLEAN DEFAULT FALSE;
-
-
-CREATE TABLE posts (
-	id SERIAL PRIMARY KEY,
-	title VARCHAR(150) NOT NULL,
-	description VARCHAR(300),
-	content TEXT,
-	category VARCHAR(50) NOT NULL,
-	board_id INTEGER REFERENCES boards (id),
-  	created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-  	target_date TIMESTAMP,
-  	author VARCHAR(100),
-  	author_id INTEGER REFERENCES users (id) NOT NULL,
-  	pinned BOOLEAN DEFAULT false NOT NULL
-);
-
-
-
+		Access functionality:
+			- When creating a board, a board_access row should be created with owners details.
+			- If a board is public, access is not checked upon viewing.
+			- If a board is not public, access is checked before viewing. 
 
 		Settings page for boards
 			- Delete button
@@ -67,15 +30,51 @@ CREATE TABLE posts (
 		THEN DONZO, NEXT PROJECT
 
 
-	# NON-CORE FEATURES
+# Post-links?
+
+	+ Add a post to your board from another board.
+	If the original is deleted?
+		Make post-link a new type of schema in the db
+		Or just add it as a post to the board? With a post_link_id, post_link_orig_author, post_link_orig_board
+
+			What if someone updates the linked post?
+				Whenever a post is updated, it should look for posts that have a post_link_id matching the post id
+				... And then update those posts to match.
+
+				...
+
+			What if someone deletes the linked post?
+				If a post is deleted, it can look for matching post links, and update them to show that the original post has been deleted.
+
+# Board access ?
+
+	Read access:
+
+	SELECT * FROM boards RIGHT boards_access ON (boards.id = boards_access.board_id) WHERE boards_access.user_id = 1;
+
+	How to list users with access to a board?
+		- Access table?
+			- For each board the user has access to, create a row.
+
+			CREATE TABLE boards_access (
+			board_id INTEGER REFERENCES boards(id) NOT NULL,
+			user_id INTEGER REFERENCES users(id) NOT NULL,
+			can_make_posts BOOLEAN DEFAULT FALSE,
+			can_edit_posts BOOLEAN DEFAULT FALSE,
+			can_delete_posts BOOLEAN DEFAULT FALSE,
+			is_owner BOOLEAN DEFAULT FALSE
+			);
+
+			INSERT INTO boards_access (board_id, user_id, can_make_posts, can_edit_posts, can_delete_posts, is_owner) 
+			VALUES
+			(4, 1, false, false, false, false);
+
+# OTHER SHIT
 
 
+	SELECT target_date, json_object_agg('post', (json_object_agg('title', title)) FROM posts GROUP BY target_date;
 
-
-SELECT target_date, json_object_agg('post', (json_object_agg('title', title)) FROM posts GROUP BY target_date;
-
-
-you can use json_agg to aggregate arrays over:
+	you can use json_agg to aggregate arrays over:
 
 	SELECT json_build_object(concat(name, r_id), json_agg(json_build_array("data".value,created_at))) 
 	FROM data group by concat(name, r_id);
@@ -192,6 +191,30 @@ AND description LIKE ('%orgies%') OR title LIKE ('%party%') OR content LIKE ('%p
 		- Messages
 		- Settings
 
+
+
+
+ALTER TABLE posts
+ADD COLUMN 
+post_link_id INTEGER REFERENCES posts (id) DEFAULT NULL,
+post_link_orig_author VARCHAR(100) DEFAULT NULL,
+post_link_orig_board INTEGER REFERENCES posts (board_id) DEFAULT NULL,
+post_link_orig_exists BOOLEAN DEFAULT FALSE;
+
+
+CREATE TABLE posts (
+	id SERIAL PRIMARY KEY,
+	title VARCHAR(150) NOT NULL,
+	description VARCHAR(300),
+	content TEXT,
+	category VARCHAR(50) NOT NULL,
+	board_id INTEGER REFERENCES boards (id),
+  	created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  	target_date TIMESTAMP,
+  	author VARCHAR(100),
+  	author_id INTEGER REFERENCES users (id) NOT NULL,
+  	pinned BOOLEAN DEFAULT false NOT NULL
+);
 
 
 
