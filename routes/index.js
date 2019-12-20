@@ -12,38 +12,48 @@ router.get('/', async function(req, res, next) {
 	if (req.session.userId) {
 		db.query(Board.getBoardsByOwnerId(req.session.userId))
 		.then(boards => {
-			console.log(boards.rows);
+			console.log(boards.rows)
 			if (!boards.rows[0]) {
-				return res.render('index');
+				return res.render('index')
 			} else {
 				return res.render('index', {boards: boards.rows})
 			}
 		})
+		.catch((err) => {
+			res.send(err);
+		})
 	} else {
+		// change to non-logged in index later
 		return res.render('index');
 	}
 
 });
 
-/* GET new board creation page */
+/* View board creation page */
 router.get('/board/new/', isLoggedIn, async function(req, res, next) {
 	res.render('newboard');
 });
 
-/* POST new board */
+/* Create new board */
 router.post('/board/new/', isLoggedIn, async function(req, res, next) {
 	db.query(Board.createBoard(req.body, req.session.userId))
-	.then(() => {
-		res.redirect('/')
+	.then(board => {
+		console.log('- created new board')
+		// create access column for creator.
+		db.query(Board.createBoardAccess(board.rows[0].id, req.session.userId, board.rows[0].name, true, true, true, true))
+		.then(() => {
+			console.log('- created new board access for board owner')
+			res.redirect('/');
+		})
 	})
-	.catch((err) => {
+	.catch(err => {
 		console.log(err);
 		return res.redirect('/', {error: err});
 	})
 });
 
-/* GET board */
-router.get('/board/:boardid/', isPublic, isLoggedIn, async function(req, res, next) {
+/* View board */
+router.get('/board/:boardid/', isPublic, isLoggedIn, canAccess, async function(req, res, next) {
 	db.query(Board.getBoardByBoardId(req.params.boardid))
 	.then(board => {
 		db.query(Board.getPostsByBoardId(req.params.boardid))
@@ -51,8 +61,8 @@ router.get('/board/:boardid/', isPublic, isLoggedIn, async function(req, res, ne
 			if (!posts.rows[0]) {
 				return res.render('board', { boardname: board.rows[0].name });
 			} else {
-				console.log(posts.rows[0])
-				console.log(board.rows[0])
+				// console.log(posts.rows[0])
+				// console.log(board.rows[0])
 				return res.render('board', {feed: posts.rows, boardname: board.rows[0].name})
 			}
 		})
@@ -90,10 +100,23 @@ router.post('/board/:boardid/new_post', isLoggedIn, isOwnerOfBoard, async functi
 router.post('/board/:boardid/link_post', isLoggedIn, async function(req, res) {
 
 	// Call board query to create a linked post
-	// Posts can be only linked from one board to another, but not to their original board.
-	// So the next action after creating the linked post is to send a confirmation, no need to reload feed.
+
+
+	// Get post(s) to be linked from db by post id
+		// define new 'get posts by post ids', 
+	db.query(Board.getPostsByPostIds(req.body))
+
+	// Pass original post, the new board id, the new user id
+
+	// Update post details with new user details, and update post_link details with original user details
+
+	// When feed is rendered, it will check if the post is a post link, and will update the layout accordingly. 
 
 	db.query(Board.linkPost)
+
+
+	// So the next action after creating the linked post is to send a confirmation, no need to reload feed.
+
 
 });
 
@@ -115,7 +138,7 @@ router.delete('/board/:boardid/delete_post', isLoggedIn, isOwnerOfBoard, async f
 	})
 });
 
-/* PAGE RELOAD DELET */
+/* PAGE RELOAD DELETE */
 
 /* GET update post page */
 router.get('/board/:boardid/:postid/edit_post', isLoggedIn, async function(req, res, next) {
@@ -252,7 +275,7 @@ function isPublic(req, res, next) {
 
 function isLoggedIn(req, res, next) {
 	// isPublic is set on GET requests to view boards
-	// if the board is public, this check can be skipped
+	// if the board is public, skip login check
 	if (req.params.isPublic) {
 		console.log('- public board - skipping login check')
 		return next();
@@ -264,6 +287,27 @@ function isLoggedIn(req, res, next) {
 			return next();
 		}
 	}
+}
+
+function canAccess(req, res, next) {
+	// if board is public, skip access check
+	if (req.params.isPublic) {
+		console.log('- public board - skipping access check')
+		return next();
+	}
+
+	// checks if user has access to view a particular board.
+	db.query(Board.hasViewAccess(req.params.boardid, req.session.userId))
+	.then((access) => {
+		if (access.rows[0]) {
+			console.log('- user has view access')
+			next();
+		} else {
+			console.log('- user doesn\'t have view access')
+			res.render('partials/errorgrid', { error: 'You can\'t view this board' });
+		}
+	})
+
 }
 
 // Tells a user whether they should log in to use functionality

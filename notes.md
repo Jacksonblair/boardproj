@@ -4,16 +4,14 @@ post
 
 	# CORE FEATURES
 
+		Keep setting up post links
+			- Make sure you cant make a post link on a board, that links to a post on the same board.
+
 		Tools for board feed editing
 			- Edit button
-				- Pressing it shows checkboxes for every post
+				- Pressing it shows checkboxes for every post TICK
 				- Save as... (saves as a post-link to one of your boards)
 				- Delete (Should only show if user is owner of board)
-
-		Access functionality:
-			- When creating a board, a board_access row should be created with owners details.
-			- If a board is public, access is not checked upon viewing.
-			- If a board is not public, access is checked before viewing. 
 
 		Settings page for boards
 			- Delete button
@@ -28,7 +26,6 @@ post
 		BROWSER COMPATABILITY
 
 		THEN DONZO, NEXT PROJECT
-
 
 # Post-links?
 
@@ -46,31 +43,19 @@ post
 			What if someone deletes the linked post?
 				If a post is deleted, it can look for matching post links, and update them to show that the original post has been deleted.
 
-# Board access ?
+	ALTER TABLE posts 
+	ADD COLUMN post_link_orig_post_id INTEGER,
+	ADD COLUMN post_link_orig_author_id INTEGER,
+	ADD COLUMN post_link_orig_author_name VARCHAR(69),
+	ADD COLUMN post_link_orig_board_id INTEGER,
+	ADD COLUMN post_link_orig_board_name VARCHAR(300),
+	ADD COLUMN post_link_orig_post_exists BOOLEAN;
 
-	Read access:
 
-	SELECT * FROM boards RIGHT boards_access ON (boards.id = boards_access.board_id) WHERE boards_access.user_id = 1;
 
-	How to list users with access to a board?
-		- Access table?
-			- For each board the user has access to, create a row.
 
-			CREATE TABLE boards_access (
-			board_id INTEGER REFERENCES boards(id) NOT NULL,
-			user_id INTEGER REFERENCES users(id) NOT NULL,
-			can_make_posts BOOLEAN DEFAULT FALSE,
-			can_edit_posts BOOLEAN DEFAULT FALSE,
-			can_delete_posts BOOLEAN DEFAULT FALSE,
-			is_owner BOOLEAN DEFAULT FALSE
-			);
-
-			INSERT INTO boards_access (board_id, user_id, can_make_posts, can_edit_posts, can_delete_posts, is_owner) 
-			VALUES
-			(4, 1, false, false, false, false);
 
 # OTHER SHIT
-
 
 	SELECT target_date, json_object_agg('post', (json_object_agg('title', title)) FROM posts GROUP BY target_date;
 
@@ -87,7 +72,6 @@ post
 			json_build_object('title', title, 'author', author, 'description', description, 'content', content, 'author_id', author_id)
 		) AS posts
 	FROM posts group by target_date;
-
 
 
 	SELECT json_build_object(

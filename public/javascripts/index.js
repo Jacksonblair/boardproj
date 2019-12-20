@@ -240,7 +240,7 @@ function linkPost() {
 	if (boardState.action.checked.length < 1) {
 		console.log('post link invalid, no posts selected.')
 		return;
-	} 
+	}
 
 	console.log('linking post(s)');
 

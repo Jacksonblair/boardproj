@@ -11,15 +11,16 @@ include partials/header
 					a(href="/board/new")
 						i.fas.fa-plus
 						|&nbsp New board
-				each board in boards
-					.board-segment-container
-						a.board-setting-icon.fas.fa-cog(href="/board/" + board.id + "/settings/")
-						a.board-name(href="/board/" + board.id + "/" )
-							= board.name
-						p.board-stats
-							span
-								| 62 Posts
-								| 7 Users
+				if boards
+					each board in boards
+						.board-segment-container
+							a.board-setting-icon.fas.fa-cog(href="/board/" + board.id + "/settings/")
+							a.board-name(href="/board/" + board.id + "/" )
+								= board.name
+							p.board-stats
+								span
+									| 62 Posts
+									| 7 Users
 
 			else
 				.ui.basic.segment

@@ -71,7 +71,15 @@ module.exports = {
 		let isPublic = board.public === "on" ? true : false;
 
 		return (`INSERT INTO boards (owner_id, name, public) 
-				VALUES (${user_id}, '${board.name}', ${isPublic})`);
+				VALUES (${user_id}, '${board.name}', ${isPublic}) RETURNING *`);
+	},
+	createBoardAccess: function(board_id, user_id, board_name, can_edit, can_make, can_delete, is_owner) {
+		return (`INSERT INTO boards_access (board_id, user_id, board_name, can_edit_posts, can_make_posts, can_delete_posts, is_owner)
+				VALUES (${board_id}, ${user_id}, '${board_name}', ${can_edit}, ${can_make}, ${can_delete}, ${is_owner})
+				`)
+	},
+	hasViewAccess: function(board_id, user_id) {
+		return (`SELECT * FROM boards_access WHERE board_id = ${board_id} AND user_id = ${user_id}`)
 	},
 	createPost: function(post, board_id, user) {
 
@@ -107,7 +115,7 @@ module.exports = {
 					)`
 				)
 	},
-	createLinkPost: function(post, board_id, user, origPost) {
+	createLinkPost: function() {
 
 		post.content = post.content.replace(/'/g, "''")
 
@@ -124,10 +132,12 @@ module.exports = {
 			board_id, 
 			author, 
 			author_id,
-			post_link_id,
-			post_link_orig_author,
-			post_link_orig_board,
-			post_link_orig_exists
+			post_link_orig_post_id,
+			post_link_orig_author_id,
+			post_link_orig_author_name,
+			post_link_orig_board_id,
+			post_link_orig_board_name,
+			post_link_orig_post_exists
 			) 
 		VALUES (
 			'${post.title}', 
@@ -136,10 +146,10 @@ module.exports = {
 			'${post.category}', 
 			'${post.target_date}', 
 			${board_id}, 
-			'${user.username}', 
+			'${user.username}',
 			${user.id},
 			${origPost.id},
-			${origPost.username},
+			${origPost.},
 			${origPost.board_id},
 			TRUE
 			)`
