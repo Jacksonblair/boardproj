@@ -22,7 +22,7 @@
     "pg": "^7.12.1",
     "pug": "^2.0.4",
     "semantic-ui-calendar": "0.0.8",
-    "tinymce": "^5.1.0",
+    "tinymce": "^5.6.0",
     "underscore": "^1.9.1"
   }
 }
